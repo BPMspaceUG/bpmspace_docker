@@ -30,6 +30,7 @@ sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8280 -j ACCEPT
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8244 -j ACCEPT 
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8380 -j ACCEPT 
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8344 -j ACCEPT 
+sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8025 -j ACCEPT 
 
 
 #download DB CONFIG

@@ -1,6 +1,5 @@
 version: '2'
 services:
-
     liam2-php-apache:
         build:
             context: ./php-apache
@@ -15,7 +14,7 @@ services:
             - 'mariadb'
         networks:
             testing_net:
-                ipv4_address: 172.28.1.3
+                ipv4_address: 172.28.1.0
 
     liam2-client-php-apache:
         build:
@@ -29,9 +28,7 @@ services:
             - LIAM2-CLIENT-www-config:/root/config
         networks:
             testing_net:
-                ipv4_address: 172.28.1.4
-
-
+                ipv4_address: 172.28.1.1
     coms-php-apache:
         build:
             context: ./php-apache   
@@ -46,7 +43,7 @@ services:
             - 'mariadb'
         networks:
             testing_net:
-                ipv4_address: 172.28.1.1
+                ipv4_address: 172.28.1.2
             
     coms-client2-php-apache:
         build:
@@ -60,8 +57,9 @@ services:
             - COMS-CLIENT2-www-config:/root/config
         networks:
             testing_net:
-                ipv4_address: 172.28.1.2
-      
+                ipv4_address: 172.28.1.3
+                
+         
     mariadb:
         image: mariadb:10.1
         hostname: MARIADB-Server
@@ -83,17 +81,18 @@ services:
         networks:
             testing_net:
                 ipv4_address: 172.28.1.10
+                
     mailhog:
         container_name: mailhog
+        hostname: MAIL-Server
         image: mailhog/mailhog
         restart: always
         ports:
             - 1025:1025
             - 8025:8025
-       networks:
+        networks:
             testing_net:
-                ipv4_address: 172.28.1.250
-
+                ipv4_address: 172.28.1.99
 volumes:
     mariadb:
         external:

@@ -2,7 +2,7 @@
    // Database Login
   define("DB_USER", "root");
   define("DB_PASS", "BPMSpaceTEST");
-  define("DB_HOST", "mariadb_1");
+  define("DB_HOST", "172.28.1.10");
   define("DB_NAME", "bpmspace_liam2_v2");
 
   // API-URL
