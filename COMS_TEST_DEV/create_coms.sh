@@ -52,7 +52,7 @@ sudo echo "sleep 20s until DB is up"
 sudo sleep 20s
 sudo echo "IMPORT DB"
 sudo mysql -u root -pBPMSpaceTEST -h 172.28.1.10 --port 3306 < ./20190516_dump_liam2_structure_v2_incl_mindata.sql
-#sudo rm -f ./*.sql*
+sudo rm -f ./*.sql*
 cd $HOME
 #sudo rm -rf $HOME/tmp
 
