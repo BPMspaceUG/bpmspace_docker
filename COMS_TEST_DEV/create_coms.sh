@@ -35,9 +35,9 @@ sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8344 -j ACCEPT
 #download DB CONFIG
 sudo wget https://raw.githubusercontent.com/BPMspaceUG/LIAM2/master/sqldump/20190516_dump_liam2_structure_v2_incl_mindata.sql -P $TMP_DIR
 
-# Start enviroment
-echo $DIR
-sudo docker-compose up -d -f $DIR/docker-compose.yml
+# Start enviroment - oder of parameters IMPORTANT
+#echo $DIR
+sudo docker-compose -f $DIR/docker-compose.yml up -d 
 
 # download git LIAM2 and LIAM2-client directly in the right volume- change owner
 sudo git clone https://github.com/BPMspaceUG/LIAM2.git /var/lib/docker/volumes/TEST-LIAM2-www-data/_data
