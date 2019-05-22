@@ -37,7 +37,7 @@ sudo wget https://raw.githubusercontent.com/BPMspaceUG/LIAM2/master/sqldump/2019
 # download git LIAM2 and LIAM2-client
 
 #sudo docker info
-sudo $DIR/docker-compose up -d
+sudo docker-compose up -d -f $DIR/docker-compose.yml
 
 sudo git clone https://github.com/BPMspaceUG/LIAM2.git /var/lib/docker/volumes/TEST-LIAM2-www-data/_data
 sudo git clone https://github.com/BPMspaceUG/LIAM2-Client.git /var/lib/docker/volumes/TEST-LIAM2-CLIENT-www-data/_data
