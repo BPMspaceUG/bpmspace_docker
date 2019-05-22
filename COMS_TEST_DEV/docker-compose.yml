@@ -61,9 +61,7 @@ services:
         networks:
             testing_net:
                 ipv4_address: 172.28.1.2
-
-
-         
+      
     mariadb:
         image: mariadb:10.1
         hostname: MARIADB-Server
@@ -85,6 +83,16 @@ services:
         networks:
             testing_net:
                 ipv4_address: 172.28.1.10
+    mailhog:
+        container_name: mailhog
+        image: mailhog/mailhog
+        restart: always
+        ports:
+            - 1025:1025
+            - 8025:8025
+       networks:
+            testing_net:
+                ipv4_address: 172.28.1.250
 
 volumes:
     mariadb:
