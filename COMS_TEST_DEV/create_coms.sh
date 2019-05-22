@@ -3,7 +3,7 @@
 export VOLUME_PREFIX="TEST"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-mkdir -p -- $HOME/tmp
+sudo mkdir -p -- $HOME/tmp
 sudo cd $HOME/tmp
 
 sudo docker volume create --name $VOLUME_PREFIX-COMS-www-data
@@ -54,7 +54,7 @@ sudo echo "IMPORT DB"
 sudo mysql -u root -pBPMSpaceTEST -h 172.28.1.10 --port 3306 < ./20190516_dump_liam2_structure_v2_incl_mindata.sql
 #sudo rm -f ./*.sql*
 cd $HOME
-sudo rm -rf $HOME/tmp
+#sudo rm -rf $HOME/tmp
 
 #if [ ! -d "$FOLDER" ] ; then
 #   git clone $URL $FOLDER
