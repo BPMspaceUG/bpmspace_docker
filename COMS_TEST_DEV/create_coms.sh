@@ -57,7 +57,7 @@ sudo echo "IMPORT DB"
 sudo mysql -u root -pBPMSpaceTEST -h 172.28.1.10 --port 3306 < $TMP_DIR/20190516_dump_liam2_structure_v2_incl_mindata.sql
 sudo rm -f $DIR/*.sql*
 cd $HOME
-#sudo rm -rf $HOME/tmp
+sudo rm -rf $HOME/tmp
 
 #if [ ! -d "$FOLDER" ] ; then
 #   git clone $URL $FOLDER
