@@ -45,6 +45,7 @@ sudo git clone https://github.com/BPMspaceUG/LIAM2.git /var/lib/docker/volumes/T
 sudo git clone https://github.com/BPMspaceUG/LIAM2-Client.git /var/lib/docker/volumes/TEST-LIAM2-CLIENT-www-data/_data
 
 sudo cp $DIR/LIAM2Server/bpmspace_liam2_v2-config.secret.inc.php /var/lib/docker/volumes/TEST-LIAM2-www-data/_data
+sudo cp $DIR/php-apache/php.ini /var/lib/docker/volumes/TEST-LIAM2-www-config/_data
 sudo chown -R www-data:www-data /var/lib/docker/volumes/TEST-LIAM2-www-data/_data/
 
 sudo cp $DIR/LIAM2Client/LIAM2_Client_api.secret.inc.php /var/lib/docker/volumes/TEST-LIAM2-CLIENT-www-data/_data/inc
