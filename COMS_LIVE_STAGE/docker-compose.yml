@@ -6,7 +6,7 @@ services:
         hostname: MARIADB_TEMP-Server
         container_name: MARIADB_TEMP-Server
         ports:
-            - 63366:3306
+            - 63367:3306
         environment:
             TZ: "Europe/Rome"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
