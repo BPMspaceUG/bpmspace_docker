@@ -5,8 +5,8 @@ services:
         restart: always
         hostname: LIAM2-Server
         ports:
-            - 8080:80
-            - 8044:443
+            - EXT_PORT_LIAM2_HTTP:80
+            - EXT_PORT_LIAM2_HTTPS:443
         volumes:
             - LIAM2-www-data:/var/www/html
             - LIAM2-www-config:/root/config
@@ -14,28 +14,28 @@ services:
             - 'mariadb'
         networks:
             testing_net:
-                ipv4_address: 172.28.1.0
+                ipv4_address: IP_LIAM2
 
     liam2-client-php-apache:
         image: bpmspace_base:latest
         restart: always
         hostname: LIAM2-CLIENT
         ports:
-            - 8180:80
-            - 8144:443
+            - EXT_PORT_LIAM2_CLIENT_HTTP:80
+            - EXT_PORT_LIAM2_CLIENT_HTTPS:443
         volumes:
             - LIAM2-CLIENT-www-data:/var/www/html
             - LIAM2-CLIENT-www-config:/root/config
         networks:
             testing_net:
-                ipv4_address: 172.28.1.1
+                ipv4_address: IP_LIAM2_CLIENT
          
     mariadb:
         image: mariadb:10.1
         restart: always
         hostname: MARIADB-Server
         ports:
-            - 63366:3306
+            - EXT_PORT_MARIADB_SQL:3306
         volumes:
             - mariadb:/var/lib/mysql
             - mariadb_config:/root/config
@@ -51,7 +51,7 @@ services:
             /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
         networks:
             testing_net:
-                ipv4_address: 172.28.1.10
+                ipv4_address: IP_MARIADB
                 
     mailhog:
         container_name: mailhog
@@ -59,11 +59,12 @@ services:
         image: mailhog/mailhog
         restart: always
         ports:
-            - 1025:1025
-            - 8025:8025
+            - EXT_PORT_MAILHOG_SMPT:1025
+            - EXT_PORT_MAILHOG_HTTP:8025
         networks:
             testing_net:
-                ipv4_address: 172.28.1.250
+                ipv4_address: IP_MAILHOG
+                
 volumes:
     mariadb:
         external:
@@ -91,4 +92,5 @@ networks:
         ipam:
             driver: default
             config:
-                - subnet: 172.28.0.0/16
+                - subnet: DOCKERNETWORK/DOCKERNETMASK
+                
