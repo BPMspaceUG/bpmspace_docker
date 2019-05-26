@@ -1,6 +1,15 @@
 #!/bin/bash
 # get (secret) parameters
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
+mkdir -p -- $TMP_DIR
+cd $TMP_DIR
 source $DIR/general.secret.conf
+
+LIAM2_SERVER=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_liam2-php-apache_1"
+LIAM2_CLIENT=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_liam2-client-php-apache_1"
+echo "LIAM2_SERVER: "$LIAM2_SERVER
+echo "LIAM2_CLIENT: "$LIAM2_CLIENT
 
 sudo docker volume create --name $PREFIX-LIAM2-www-data
 sudo docker volume create --name $PREFIX-LIAM2-www-config
@@ -16,11 +25,6 @@ sudo docker volume create --name $PREFIX-mailhog-config
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT 
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8044 -j ACCEPT 
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8180 -j ACCEPT 
-sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8144 -j ACCEPT 
-sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8280 -j ACCEPT 
-sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8244 -j ACCEPT 
-sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8380 -j ACCEPT 
-sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8344 -j ACCEPT 
 sudo iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 8025 -j ACCEPT 
 
 
@@ -47,21 +51,23 @@ sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www
 cp $DIR/LIAM2_STAGE_TEST_DEV/docker-compose.yml $TMP_DIR/docker-compose.yml
 sed -i "s/AUTOMATICALLYSET/$DB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
 sed -i "s/PREFIX/$PREFIX/g" $TMP_DIR/docker-compose.yml
-sudo docker-compose -f $TMP_DIR/docker-compose.yml up -d
+sudo docker-compose -p $PREFIX -f $TMP_DIR/docker-compose.yml up -d
 
-# import DB
+#import DB
 sudo echo "sleep 20s until DB is up"
-sudo sleep 20s
+for i in {20..1}
+		do echo -e "\r"&& echo -n "$i." && sleep 1
+		done
 sudo echo "IMPORT DB"
 sudo mysql -u root -p$DB_ROOT_PASSWD -h 172.28.1.10 --port 3306 < $TMP_DIR/20190516_dump_liam2_structure_v2_incl_mindata.sql
 sudo rm -f $DIR/*.sql*
 
 # restart Postfix and send testmail
 sudo echo "Send Testmail"
-sudo docker exec -it comstestdev_liam2-php-apache_1 /bin/sh -c  "service postfix restart"
-sudo docker exec -it comstestdev_liam2-php-apache_1 /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"test from LIAM2 Server\", time(), \"From: liam2 <liam2@bpmspace.net>\");'"
-sudo docker exec -it comstestdev_liam2-client-php-apache_1 /bin/sh -c  "service postfix restart"
-sudo docker exec -it comstestdev_liam2-client-php-apache_1 /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"test from LIAM2 Client\", time(), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
+sudo docker exec -it $LIAM2_SERVER /bin/sh -c  "service postfix restart"
+sudo docker exec -it $LIAM2_SERVER /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST TEST from LIAM2 $PREFIX-Server\", time(), \"From: liam2 <liam2@bpmspace.net>\");'"
+sudo docker exec -it $LIAM2_CLIENT /bin/sh -c  "service postfix restart"
+sudo docker exec -it $LIAM2_CLIENT /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST TEST from LIAM2 $PREFIX-Client\", time(), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
 
 cd $HOME
 sudo rm -rf $TMP_DIR
