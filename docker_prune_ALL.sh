@@ -1,7 +1,7 @@
 #!/bin/bash
-sudo docker container stop $(sudo docker container ls -a -q)
-sudo docker container prune -f
-sudo docker volume prune -f
-sudo docker network prune -f
-#sudo docker image prune -f
-#sudo docker system prune -a -f --volumes
+docker container stop $(sudo docker container ls -a -q)
+docker container prune -f
+docker volume prune -f
+docker network prune -f
+#docker image prune -f
+#docker system prune -a -f --volumes

@@ -35,7 +35,7 @@ sudo git clone $LIAM2_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-www-
 sudo git clone $LIAM2_CLIENT_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
 
 # copy LIAM config to temp + replace PASS + copy to LIAM Server volume + change owner
- cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/bpmspace_liam2_v2-config.secret.inc.php $TMP_DIR
+ cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/bpmspace_liam2_v2-config_EXAMPLEsecret.inc.php $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/AUTOMATICALLYSET/$DB_ROOT_PASSWD/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
@@ -44,7 +44,7 @@ sudo cp $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php /var/lib/docker/volumes
 sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
 
 # copy LIAM CLIENT config to temp + copy to LIAM Client volume + change owner
- cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api.secret.inc.php $TMP_DIR
+ cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2_Client_api.secret.inc.php
 sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/inc
 sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/
 
