@@ -27,8 +27,6 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
  docker volume create --name $PREFIX-mailhog-data
  docker volume create --name $PREFIX-mailhog-config
 
-
-
 #download DB LIAM2 Structure and minimum Data
  wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
