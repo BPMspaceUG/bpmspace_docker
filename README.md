@@ -12,10 +12,13 @@ AS ROOT
 - apt-get install postfix
   Satellite Subsystem
   Hostname - as you like
-   SMTP relay host 172.28.1.200:1025 - default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf - will be downloaded later
+  SMTP relay host 172.28.1.200:1025
+  as default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf - will be downloaded later
 - apt-get install docker
 - apt-get install docker-compose
+- apt-get install mariadb-client
 - exit
+
 BACK as NORMAL USER !!!!!!!!!
 - cd $HOME
 - git clone https://github.com/BPMspaceUG/bpmspace_docker.git
