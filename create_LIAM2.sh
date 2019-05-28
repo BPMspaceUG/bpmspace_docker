@@ -28,7 +28,7 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
  docker volume create --name $PREFIX-mailhog-config
 
 #download DB LIAM2 Structure and minimum Data
- wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
+ wget --no-certificate $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
 # download git LIAM2 and LIAM2-client directly in the right volume + change owner
 sudo git clone $LIAM2_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data
@@ -77,7 +77,7 @@ sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/docker-compose.ym
 sed -i "s/IP_LIAM2/$IP_LIAM2/g" $TMP_DIR/docker-compose.yml
 
 # prepare Acceptance Mail 
-wget $LIAM2_ACCEPTANCETEST_URL/$LIAM2_ACCEPTANCETEST_FILE -P $TMP_DIR
+wget --no-certificate $LIAM2_ACCEPTANCETEST_URL/$LIAM2_ACCEPTANCETEST_FILE -P $TMP_DIR
 sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/$LIAM2_ACCEPTANCETEST_FILE
 sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/$LIAM2_ACCEPTANCETEST_FILE
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/$LIAM2_ACCEPTANCETEST_FILE
