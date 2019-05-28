@@ -4,6 +4,9 @@ SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
 mkdir -p -- $TMP_DIR
 mkdir -p -- $TMP_DIR/_bpmspace_base
+mkdir -p -- $TMP_DIR/LIAM2-SERVER_var-www-html/
+mkdir -p -- $TMP_DIR/LIAM2-CLIENT_var-www-html/
+
 cd $TMP_DIR
 source $SCRIPT/general.secret.conf
 
@@ -15,8 +18,8 @@ MARIADB=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mariadb_1"
 MAILHOG=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mailhog"
 
 # Delete volumes 
-sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
-sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/
+#sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
+#sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/
 
 echo "LIAM2_SERVER: "$LIAM2_SERVER
 echo "LIAM2_CLIENT: "$LIAM2_CLIENT
@@ -33,23 +36,23 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
 #download DB LIAM2 Structure and minimum Data
  wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
-# download git LIAM2 and LIAM2-client directly in the right volume + change owner
-sudo git clone $LIAM2_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data
-sudo git clone $LIAM2_CLIENT_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
+# download git LIAM2 and LIAM2-client in a temp HTML dir + change owner
+sudo git clone $LIAM2_GITHUB_REPO_URL $TMP_DIR/LIAM2-SERVER_var-www-html/
+sudo git clone $LIAM2_CLIENT_GITHUB_REPO_URL $TMP_DIR/LIAM2-CLIENT_var-www-html/
 
-# copy LIAM config to temp + replace PASS + copy to LIAM Server volume + change owner
+# copy LIAM config to temp + replace PASS + copy in a temp HTML dir + change owner
  cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/bpmspace_liam2_v2-config_EXAMPLEsecret.inc.php $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/AUTOMATICALLYSET/$DB_ROOT_PASSWD/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
  sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php
-sudo cp $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data 
-sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
+sudo cp $TMP_DIR/bpmspace_liam2_v2-config.secret.inc.php $TMP_DIR/LIAM2-SERVER_var-www-html/ 
+sudo chown -R www-data:www-data $TMP_DIR//LIAM2-SERVER_var-www-html/
 
-# copy LIAM CLIENT config to temp + copy to LIAM Client volume + change owner
- cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2_Client_api.secret.inc.php
-sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/inc
-sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/
+# copy LIAM CLIENT config to temp + copy in a temp HTML dir + change owner
+cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2_Client_api.secret.inc.php
+sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php $TMP_DIR/LIAM2-CLIENT_var-www-html/inc
+sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT_var-www-html/
 
 
 #copy composer to temp - replace parameter from config file - Start enviroment - ORDER of switches IMPORTANT
@@ -108,9 +111,7 @@ for i in {20..1}
  mysql -u root -p$DB_ROOT_PASSWD -h $IP_MARIADB --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
  rm -f $SCRIPT/*.sql*
 
-# git clone repos 
-docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
-docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+
 
 # config Mail relay & restart Postfix and send testmail
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf
@@ -124,6 +125,10 @@ cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Client_main.cf
 #sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/LIAM2-Client_main.cf
  docker cp $TMP_DIR/LIAM2-Server_main.cf $LIAM2_SERVER:/etc/postfix/main.cf
  docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
+
+# copy temp html dir to docker
+docker cp $TMP_DIR/LIAM2-SERVER_var-www-html/ $LIAM2_SERVER:/var/www/html/
+docker cp $TMP_DIR/LIAM2-CLIENT_var-www-html/ $LIAM2_CLIENT:/var/www/html/
 
 #prepare fetch all command
 echo "prepare fetch all command"
@@ -159,7 +164,9 @@ docker cp $TMP_DIR/import_db.sh $LIAM2_SERVER:/var/www/script/import_db.sh
 docker cp $TMP_DIR/import_dbdiff.sh $LIAM2_SERVER:/var/www/script/import_dbdiff.sh
 
 
-
+# git clone repos 
+docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 
 
 # set owner and execute 
