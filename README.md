@@ -1,8 +1,8 @@
 # Installation
 ## under Windows Subsystem einrichten
-Install https://docs.docker.com/docker-for-windows/
-Install Windows Subsystem for Linux (WSL) on on Windows 10 -  https://docs.microsoft.com/en-us/windows/wsl/install-win10
-Get Debian - Microsoft Store  https://www.microsoft.com/en-us/p/debian/9msvkqc78pk6?rtc=1&activetab=pivot%3Aoverviewtab
+- Install https://docs.docker.com/docker-for-windows/
+- Install Windows Subsystem for Linux (WSL) on on Windows 10 -  https://docs.microsoft.com/en-us/windows/wsl/install-win10
+- Get Debian - Microsoft Store  https://www.microsoft.com/en-us/p/debian/9msvkqc78pk6?rtc=1&activetab=pivot%3Aoverviewtab
 cretae own USER - Remember Passwd! or store in lastpass
 
 ## under LINUX HOST oder in a Windows Subsystem for Linux (WSL) 
