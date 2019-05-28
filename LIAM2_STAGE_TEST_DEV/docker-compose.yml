@@ -20,7 +20,7 @@ services:
     liam2-client-php-apache:
         build:
             context: ./_bpmspace_base
-            restart: always
+        restart: always
         hostname: LIAM2-CLIENT
         ports:
             - EXT_PORT_LIAM2_CLIENT_HTTP:80

@@ -30,6 +30,10 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
 #download DB LIAM2 Structure and minimum Data
  wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
+# Delete volumes 
+sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
+sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
+ 
 # download git LIAM2 and LIAM2-client directly in the right volume + change owner
 sudo git clone $LIAM2_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data
 sudo git clone $LIAM2_CLIENT_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
