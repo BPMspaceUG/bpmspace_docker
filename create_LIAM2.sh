@@ -14,6 +14,9 @@ LIAM2_CLIENT=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_liam2-client-php-ap
 MARIADB=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mariadb_1"
 MAILHOG=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mailhog"
 
+# Delete volumes 
+sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
+sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data/
 
 echo "LIAM2_SERVER: "$LIAM2_SERVER
 echo "LIAM2_CLIENT: "$LIAM2_CLIENT
@@ -30,10 +33,6 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
 #download DB LIAM2 Structure and minimum Data
  wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
-# Delete volumes 
-sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data/
-sudo rm -rf /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
- 
 # download git LIAM2 and LIAM2-client directly in the right volume + change owner
 sudo git clone $LIAM2_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-www-data/_data
 sudo git clone $LIAM2_CLIENT_GITHUB_REPO_URL /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www-data/_data
@@ -109,6 +108,9 @@ for i in {20..1}
  mysql -u root -p$DB_ROOT_PASSWD -h $IP_MARIADB --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
  rm -f $SCRIPT/*.sql*
 
+# git clone repos 
+docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 
 # config Mail relay & restart Postfix and send testmail
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf
@@ -155,6 +157,10 @@ docker cp $TMP_DIR/import_db.php $LIAM2_SERVER:/var/www/html/import_db.php
 docker cp $TMP_DIR/import_dbdiff.php $LIAM2_SERVER:/var/www/html/import_dbdiff.php
 docker cp $TMP_DIR/import_db.sh $LIAM2_SERVER:/var/www/script/import_db.sh
 docker cp $TMP_DIR/import_dbdiff.sh $LIAM2_SERVER:/var/www/script/import_dbdiff.sh
+
+
+
+
 
 # set owner and execute 
 echo "set owner and execute"
