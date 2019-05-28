@@ -18,8 +18,9 @@ services:
                 ipv4_address: IP_LIAM2
 
     liam2-client-php-apache:
-        image: bpmspace_base:latest
-        restart: always
+        build:
+            context: ./_bpmspace_base
+            restart: always
         hostname: LIAM2-CLIENT
         ports:
             - EXT_PORT_LIAM2_CLIENT_HTTP:80
