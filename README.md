@@ -1,6 +1,6 @@
 # Installation
 ## under Windows Subsystem einrichten
-* Install https://docs.docker.com/docker-for-windows/
+* Install https://docs.docker.com/docker-for-windows/ with “Expose daemon on tcp://localhost:2375 without TLS” 
 * Install Windows Subsystem for Linux (WSL) on on Windows 10
 * https://docs.microsoft.com/en-us/windows/wsl/install-win10
 * Get Debian - Microsoft Store  https://www.microsoft.com/en-us/p/debian/9msvkqc78pk6?rtc=1&activetab=pivot%3Aoverviewtab
@@ -35,7 +35,7 @@ AS ROOT
    *sudo apt-get update
    *sudo apt-get install docker-ce docker-ce-cli containerd.io
    *docker -H localhost:2375 images
-   *export DOCKER_HOST=localhost:2375
+   *export DOCKER_HOST=localhost:2375 (also in .bashrc)
    *docker images
    *exit
 
