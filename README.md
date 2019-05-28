@@ -1,5 +1,21 @@
-# Installation of a docker host running under windows as a VM
-you should have https://docs.docker.com/v17.09/docker-for-windows/install/ OR NEWER on your system.
+# Installation
+## under Windows Subsystem einrichten
+Install Windows Subsystem for Linux (WSL) on on Windows 10 -  https://docs.microsoft.com/en-us/windows/wsl/install-win10
+Get Debian - Microsoft Store  https://www.microsoft.com/en-us/p/debian/9msvkqc78pk6?rtc=1&activetab=pivot%3Aoverviewtab
+cretae own USER - Remember Passwd! or store in lastpas
+
+## under LINUX HOST oder in a Windows Subsystem for Linux (WSL) 
+- sudo su root 
+- apt-get update
+- apt-get install git
+- apt-get install postfix
+-- Satellite Subsystem
+-- Hostname - as you like
+-- SMTP relay host 
+
+
+  
+
 1. create virtuall machine with http://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-9.9.0-arm64-netinst.iso OR NEWER
   Name: BPMspace_docker_enviroment
   Generation: Generation 2
