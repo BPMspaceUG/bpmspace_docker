@@ -11,31 +11,31 @@ AS ROOT
 * apt-get update
 * apt-get install git
 * apt-get install postfix
-** Satellite Subsystem
-** Hostname * as you like
-** SMTP relay host 172.28.1.200:1025
-** as default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf
-** will be downloaded later
+   *Satellite Subsystem
+   *Hostname * as you like
+   *SMTP relay host 172.28.1.200:1025
+   *as default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf
+   *will be downloaded later
 * apt-get install mariadb-client
 * Get Docker CE for Debian https://docs.docker.com/install/linux/docker-ce/debian/
-** sudo apt-get update
-** sudo apt-get install \
-** apt-transport-https \
-** ca-certificates \
-** curl \
-** gnupg2 \
-** software-properties-common
-** * curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-** * sudo add-apt-repository \
-** ** "deb [arch=amd64] https://download.docker.com/linux/debian \
-** ** $(lsb_release -cs) \
-** ** stable"
-** * sudo apt-get update
-** * sudo apt-get install docker-ce docker-ce-cli containerd.io
-** * docker -H localhost:2375 images
-** * export DOCKER_HOST=localhost:2375
-** * docker images
-** 
+   *sudo apt-get update
+   *sudo apt-get install \
+   *apt-transport-https \
+   *ca-certificates \
+   *curl \
+   *gnupg2 \
+   *software-properties-common
+   ** curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+   ** sudo add-apt-repository \
+   *   *"deb [arch=amd64] https://download.docker.com/linux/debian \
+   *   *$(lsb_release -cs) \
+   *   *stable"
+   ** sudo apt-get update
+   ** sudo apt-get install docker-ce docker-ce-cli containerd.io
+   ** docker -H localhost:2375 images
+   ** export DOCKER_HOST=localhost:2375
+   ** docker images
+   *
 * https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4
 * exit
 
