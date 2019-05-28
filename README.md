@@ -50,4 +50,23 @@ BACK as NORMAL USER !!!!!!!!!
 * chmod +x *.sh
 * cp general.EXAMPLE_secret.conf general.secret.conf
 
+# to access the linux files system do 
+connect to the subsystem on 127.0.0.1:22
 
+Preparation:
+
+    sudo apt-get purge openssh-server
+    sudo apt-get install openssh-server
+    sudo nano /etc/ssh/sshd_config and disallow root login by setting PermitRootLogin no
+
+    Then add a line beneath it that says:
+
+    AllowUsers yourusername
+
+    and make sure PasswordAuthentication is set to yes if you want to login using a password.
+
+    Disable privilege separation by adding/modifying : UsePrivilegeSeparation no
+
+    sudo service ssh --full-restart
+
+    Connect to your Linux subsystem from Windows using a ssh client like PuTTY.
