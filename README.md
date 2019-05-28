@@ -10,21 +10,17 @@ AS ROOT
 - apt-get update
 - apt-get install git
 - apt-get install postfix
--- Satellite Subsystem
--- Hostname - as you like
--- SMTP relay host 172.28.1.200:1025 - default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf - will be downloaded Later
+  Satellite Subsystem
+  Hostname - as you like
+   SMTP relay host 172.28.1.200:1025 - default BUT DEPENDING on IP_MAILHOG and SUBNET_NETWORK defnied in $HOME/bpmspace_docker/general.secret.conf - will be downloaded later
+- apt-get install docker
+- apt-get install docker-compose
+- exit
+BACK as NORMAL USER !!!!!!!!!
+- cd $HOME
+- git clone https://github.com/BPMspaceUG/bpmspace_docker.git
+- cd bpmspace_docker/
+- chmod +x *.sh
+- cp general.EXAMPLE_secret.conf general.secret.conf
 
-BACK as NORMAL USER
-exiit 
 
-
-  
-
-1. create virtuall machine with http://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-9.9.0-arm64-netinst.iso OR NEWER
-  Name: BPMspace_docker_enviroment
-  Generation: Generation 2
-  Arbeitsspeicher: 2048 MB
-  Netzwerk: DockerNAT
-  Festplatte: C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\BPMspace_docker_enviroment.vhdx (VHDX, dynamisch erweiterbar)
-  Betriebssystem: Installation von "C:\Users\USERNAME\Downloads\debian-9.9.0-arm64-netinst.iso"
-  
