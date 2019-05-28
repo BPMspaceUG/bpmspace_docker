@@ -3,6 +3,7 @@
 SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
 mkdir -p -- $TMP_DIR
+mkdir -p -- $TMP_DIR/_bpmspace_base
 cd $TMP_DIR
 source $SCRIPT/general.secret.conf
 
@@ -26,15 +27,7 @@ echo "LIAM2_CLIENT: "$LIAM2_CLIENT
  docker volume create --name $PREFIX-mailhog-data
  docker volume create --name $PREFIX-mailhog-config
 
-#open ports on Host for external access
 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_MARIADB_SQL -j ACCEPT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_MAILHOG_SMPT -j REJECT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_MAILHOG_HTTP -j ACCEPT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_LIAM2_HTTP -j ACCEPT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_LIAM2_HTTPS -j ACCEPT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_LIAM2_CLIENT_HTTP -j ACCEPT 
- iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport $EXT_PORT_LIAM2_CLIENT_HTTPS -j ACCEPT 
 
 #download DB LIAM2 Structure and minimum Data
  wget $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
@@ -61,12 +54,12 @@ sudo chown -R www-data:www-data /var/lib/docker/volumes/$PREFIX-LIAM2-CLIENT-www
 #copy composer to temp - replace parameter from config file - Start enviroment - ORDER of switches IMPORTANT
 #echo $SCRIPT
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/docker-compose.yml $TMP_DIR/docker-compose.yml
+cp $SCRIPT/_bpmspace_base/Dockerfile $TMP_DIR/_bpmspace_base/Dockerfile
 sed -i "s/AUTOMATICALLYSET/$DB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
 sed -i "s/PREFIX/$PREFIX/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETWORK/$DOCKERNETWORK/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETMASK/$DOCKERNETMASK/g" $TMP_DIR/docker-compose.yml
-sed -i "s/SCRI/$SCRIPT/g" $TMP_DIR/docker-compose.yml
-echo "!"
+
 
 
 sed -i "s/EXT_PORT_MARIADB_SQL/$EXT_PORT_MARIADB_SQL/g" $TMP_DIR/docker-compose.yml

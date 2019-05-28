@@ -2,7 +2,7 @@ version: '2'
 services:
     liam2-php-apache:
         build:
-            context: /home/rootmessages/bpmspace_docker/_bpmspace_base
+            context: ./_bpmspace_base
         restart: always
         hostname: LIAM2-Server
         ports:
