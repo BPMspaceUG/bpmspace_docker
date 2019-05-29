@@ -102,16 +102,14 @@ LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
  docker-compose -p $PREFIX -f $TMP_DIR/docker-compose.yml up -d
 
 #import DB
-
+#: '
  echo "sleep 20s until DB is up"
 for i in {20..1}
 		do echo -e "\r"&& echo -n "$i." && sleep 1
 		done
  echo "IMPORT DB"
  mysql -u root -p$DB_ROOT_PASSWD -h $IP_MARIADB --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
- rm -f $SCRIPT/*.sql*
-
-
+#'
 
 # config Mail relay & restart Postfix and send testmail
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf
@@ -127,8 +125,9 @@ cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Client_main.cf
  docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
 
 # copy temp html dir to docker
-docker cp $TMP_DIR/LIAM2-SERVER_var-www-html/ $LIAM2_SERVER:/var/www/html/
-docker cp $TMP_DIR/LIAM2-CLIENT_var-www-html/ $LIAM2_CLIENT:/var/www/html/
+docker cp $TMP_DIR/LIAM2-SERVER_var-www-html/. $LIAM2_SERVER:/var/www/html
+docker cp $TMP_DIR/LIAM2-CLIENT_var-www-html/. $LIAM2_CLIENT:/var/www/html
+
 
 #prepare fetch all command
 echo "prepare fetch all command"
