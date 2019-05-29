@@ -1,5 +1,4 @@
 #!/bin/bash
-# get (secret) parameters
 SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
 mkdir -p -- $TMP_DIR
@@ -8,6 +7,7 @@ mkdir -p -- $TMP_DIR/LIAM2-SERVER_var-www-html/
 mkdir -p -- $TMP_DIR/LIAM2-CLIENT_var-www-html/
 
 cd $TMP_DIR
+# get (secret) parameters
 source $SCRIPT/general.secret.conf
 
 ############TODO - TEST IF PREFIX="STAGE"|"TEST"|"DEV" or exit https://rsalveti.wordpress.com/2007/04/03/bash-parsing-arguments-with-getopts/
