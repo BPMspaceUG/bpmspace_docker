@@ -37,7 +37,7 @@ services:
         restart: always
         hostname: MARIADB-Server
         ports:
-            - EXT_PORT_MARIADB_SQL:3306
+            - MARIADB_EXT_PORT_SQL:3306
         volumes:
             - mariadb:/var/lib/mysql
             - mariadb_config:/root/config
@@ -47,12 +47,12 @@ services:
             MYSQL_ROOT_PASSWORD: "AUTOMATICALLYSET"
         entrypoint:
             sh -c "echo '
-            CREATE DATABASE IF NOT EXISTS LIAM2_DB_NAME;
+            CREATE DATABASE IF NOT EXISTS LIAM2_DB_NAME; 
             ' > /docker-entrypoint-initdb.d/init.sql ;
             /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
         networks:
             testing_net:
-                ipv4_address: IP_MARIADB
+                ipv4_address: MARIADB_IP
                 
     mailhog:
         container_name: mailhog

@@ -12,6 +12,7 @@ AS ROOT
 * sudo su root 
 * apt-get update
 * apt-get install git
+* apt-get install markdown
 * apt-get install postfix
    *Satellite Subsystem
    *Hostname * as you like

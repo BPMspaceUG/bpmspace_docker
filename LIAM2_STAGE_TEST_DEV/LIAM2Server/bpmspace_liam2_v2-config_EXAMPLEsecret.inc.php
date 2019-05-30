@@ -1,8 +1,8 @@
 <?php
    // Database Login
   define("DB_USER", "root");
-  define("DB_PASS", "DB_ROOT_PASSWD");
-  define("DB_HOST", "IP_MARIADB");
+  define("DB_PASS", "MARIADB_ROOT_PASSWD");
+  define("DB_HOST", "MARIADB_IP");
   define("DB_NAME", "LIAM2_DB_NAME");
 
   // API-URL

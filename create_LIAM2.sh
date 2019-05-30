@@ -41,8 +41,8 @@ git clone $LIAM2_CLIENT_GITHUB_REPO_URL $TMP_DIR/LIAM2-CLIENT-html/
 
 # copy LIAM config to HTML temp  Folder + replace Parameters
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/bpmspace_liam2_v2-config_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
-sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
+sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
 sed -i "s/LIAM2_DB_NAME/$LIAM2_DB_NAME/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
 sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
 sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
@@ -55,13 +55,13 @@ sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT-html/
 #copy docker-compose to temp - replace parameter from config file - Start enviroment - ORDER of switches IMPORTANT
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/docker-compose.yml $TMP_DIR/docker-compose.yml
 cp $SCRIPT/_bpmspace_base/Dockerfile $TMP_DIR/_bpmspace_base/Dockerfile
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
 sed -i "s/PREFIX/$PREFIX/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETWORK/$DOCKERNETWORK/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETMASK/$DOCKERNETMASK/g" $TMP_DIR/docker-compose.yml
 sed -i "s/LIAM2_DB_NAME/$LIAM2_DB_NAME/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_MARIADB_SQL/$EXT_PORT_MARIADB_SQL/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/docker-compose.yml
+sed -i "s/MARIADB_EXT_PORT_SQL/$MARIADB_EXT_PORT_SQL/g" $TMP_DIR/docker-compose.yml
+sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/docker-compose.yml
@@ -80,23 +80,23 @@ sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/$
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
 sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
 sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_MARIADB_SQL/$EXT_PORT_MARIADB_SQL/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR <$TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+sed -i "s/MARIADB_EXT_PORT_SQL/$MARIADB_EXT_PORT_SQL/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR < $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//'"'/'\"'/}
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
 # prepare LIAM SERVER Acceptance Mail 
-wget $LIAM2_SERVER_ACCEPTANCETEST_URL/$LIAM2_SERVER_ACCEPTANCETEST_FILE -P $TMP_DIR
-sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/EXT_PORT_MARIADB_SQL/$EXT_PORT_MARIADB_SQL/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR <$TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+wget $LIAM2_CLIENT_ACCEPTANCETEST_URL/$LIAM2_CLIENT_ACCEPTANCETEST_FILE -P $TMP_DIR
+sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/MARIADB_EXT_PORT_SQL/$MARIADB_EXT_PORT_SQL/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
+IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR <$TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//'"'/'\"'/}
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
@@ -116,7 +116,7 @@ for i in {20..1}
 		do echo -e "\r"&& echo -n "$i." && sleep 1
 		done
  echo "IMPORT DB"
- mysql -u root -p$DB_ROOT_PASSWD -h $IP_MARIADB --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
+ mysql -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
 #'
 
 # config Mail relay & restart Postfix and send testmail
@@ -158,10 +158,10 @@ cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_db.sh $TMP_DIR/import_db.sh
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_dbdiff.php $TMP_DIR/import_dbdiff.php
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_dbdiff.sh $TMP_DIR/import_dbdiff.sh
 
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/import_db.sh
-sed -i "s/DB_ROOT_PASSWD/$DB_ROOT_PASSWD/g" $TMP_DIR/import_dbdiff.sh
-sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/import_db.sh
-sed -i "s/IP_MARIADB/$IP_MARIADB/g" $TMP_DIR/import_dbdiff.sh
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/import_db.sh
+sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/import_dbdiff.sh
+sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/import_db.sh
+sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/import_dbdiff.sh
 sed -i "s/LIAM2_SQLDUMP_FILE_DIFF/$LIAM2_SQLDUMP_FILE_DIFF/g" $TMP_DIR/import_dbdiff.sh
 sed -i "s/LIAM2_SQLDUMP_FILE/$LIAM2_SQLDUMP_FILE/g" $TMP_DIR/import_db.sh
 
@@ -170,15 +170,12 @@ docker cp $TMP_DIR/import_dbdiff.php $LIAM2_SERVER:/var/www/html/import_dbdiff.p
 docker cp $TMP_DIR/import_db.sh $LIAM2_SERVER:/var/www/script/import_db.sh
 docker cp $TMP_DIR/import_dbdiff.sh $LIAM2_SERVER:/var/www/script/import_dbdiff.sh
 
-
 # git clone repos 
 docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 
-
 # set owner and execute 
 echo "set owner and execute"
-
 docker exec -it $LIAM2_SERVER /bin/sh -c  "chown -R www-data:www-data /var/www/"
 docker exec -it $LIAM2_SERVER /bin/sh -c  "chmod +x /var/www/script/*.sh"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "chown -R www-data:www-data /var/www/"
@@ -192,14 +189,19 @@ echo "Send Testmail"
  docker exec -it $LIAM2_CLIENT /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2 $PREFIX-Client\", date(DATE_RFC822), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
 
 cd $HOME
-mail -s "ACCEPTANCE TEST LIAM SERVER" testuser@mailhog < $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+#mail -s "ACCEPTANCE TEST LIAM SERVER" testuser@mailhog < $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
+sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2-Server.html
+sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2-Client.html
 
-printf "DONE - Please note the mail \"Acceptance Test\" on the Mailhog at http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP - thank you \n\r
-		docker exec -it $LIAM2_SERVER bash \n\r
-		docker exec -it $LIAM2_CLIENT bash \n\r
-		docker exec -it $MARIADB bash \n\r
-		docker exec -it $MAILHOG bash \n\r
-	"
+printf "
+$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2-Server.html\n\r
+$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2-Client.html\n\r
+Mailhog http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP\n\r
+docker exec -it $LIAM2_SERVER bash \n\r
+docker exec -it $LIAM2_CLIENT bash \n\r
+docker exec -it $MARIADB bash \n\r
+docker exec -it $MAILHOG bash \n\r
+"
 #printf "\n\r$LIAM2_ACCEPTANCETEST_VAR \n\r"
 
 #echo "LIAM2_SERVER: "$LIAM2_SERVER
