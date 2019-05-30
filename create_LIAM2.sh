@@ -110,14 +110,28 @@ LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
  docker-compose -p $PREFIX -f $TMP_DIR/docker-compose.yml up -d
 
 #import DB
-#: '
+: '
  echo "sleep 20s until DB is up"
 for i in {20..1}
 		do echo -e "\r"&& echo -n "$i." && sleep 1
 		done
- echo "IMPORT DB"
+
  mysql -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
 #'
+maxcounter=45
+ 
+counter=1
+while ! mysql --protocol TCP -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 -e "show databases;" > /dev/null 2>&1; do
+    sleep 1
+	echo "$counter seconds waiting to have DB up"
+    counter=`expr $counter + 1`
+    if [ $counter -gt $maxcounter ]; then
+        >&2 echo "We have been waiting for MySQL too long already; failing."
+        exit 1
+    fi;
+done
+echo "IMPORT DB"
+mysql -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
 
 # config Mail relay & restart Postfix and send testmail
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf

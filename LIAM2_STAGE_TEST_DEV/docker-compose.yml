@@ -44,7 +44,7 @@ services:
         environment:
             TZ: "Europe/Rome"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-            MYSQL_ROOT_PASSWORD: "AUTOMATICALLYSET"
+            MYSQL_ROOT_PASSWORD: "MARIADB_ROOT_PASSWD"
         entrypoint:
             sh -c "echo '
             CREATE DATABASE IF NOT EXISTS LIAM2_DB_NAME; 
