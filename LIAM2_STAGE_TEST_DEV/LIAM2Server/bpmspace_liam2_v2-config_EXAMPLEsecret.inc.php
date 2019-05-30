@@ -1,12 +1,12 @@
 <?php
    // Database Login
   define("DB_USER", "root");
-  define("DB_PASS", "AUTOMATICALLYSET");
+  define("DB_PASS", "DB_ROOT_PASSWD");
   define("DB_HOST", "IP_MARIADB");
-  define("DB_NAME", "bpmspace_liam2_v2");
+  define("DB_NAME", "LIAM2_DB_NAME");
 
   // API-URL
-  define("API_URL", "http://HOSTNAME:EXT_PORT_LIAM2_HTTP/api.php");
+  define("API_URL", "http://localhost:80/api.php");
   define("API_URL_LIAM", ""); // for Login
   // AuthKey
   define("AUTH_KEY", "secretkey_e1e290f9b5a8bffdca47bc078975d0aa0a4536dc");
