@@ -10,13 +10,13 @@
         return null;
     }
     // Parameters
-    $user = getPOSTParamSecure('usr');
-    $pass = getPOSTParamSecure('pwd');
+    $user = md5(getPOSTParamSecure('usr'));
+    $pass = md5(getPOSTParamSecure('pwd'));
 
     $login_successful = false;
     if (!is_null($user) && !is_null($pass)) {
         // For Testing
-        if ($user == 'root' && $pass == 'toor') {
+        if ($user == '74cc1c60799e0a786ac7094b532f01b1' && $pass == '7b24afc8bc80e548d66c4e7ff72171c5') {
             $user_id = 23;
             $firstname = 'Admin';
             $lastname = 'Admin';
