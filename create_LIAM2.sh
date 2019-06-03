@@ -100,66 +100,34 @@ IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR <$TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETE
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//'"'/'\"'/}
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
-
-
-
-
-
-
 # start Enviroment
  docker-compose -p $PREFIX -f $TMP_DIR/docker-compose.yml up -d
 
-#import DB
-#: '
-echo "sleep 15s then start checking if DB is up"
-for i in {15..1}
-		do echo -e "\r"&& echo -n "$i." && sleep 1
-		done
-maxcounter=20
-counter=15
-while ! mysql --protocol TCP -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 -e "show databases;" > /dev/null 2>&1; do
-    sleep 1
-	echo "$counter - I try to connect please wait"
-    counter=`expr $counter + 1`
-    if [ $counter -gt $maxcounter ]; then
-        >&2 echo "We have been waiting for MySQL too long already; failing."
-        exit 1
-    fi;
-done
-echo "IMPORT DB"
-mysql -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 < $TMP_DIR/$LIAM2_SQLDUMP_FILE
-#'
 
-# config Mail relay & restart Postfix and send testmail
+#config Mail relay & restart Postfix and send testmail
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf
 cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Client_main.cf
 
-#sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/LIAM2-Server_main.cf
-#sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/LIAM2-Client_main.cf
-#sed -i "s/SERVERNAME/$LIAM2-SERVER/g" $TMP_DIR/LIAM2-Server_main.cf
-#sed -i "s/SERVERNAME/$LIAM2-CLIENT/g" $TMP_DIR/LIAM2-Client_main.cf
-#sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/LIAM2-Server_main.cf
-#sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/LIAM2-Client_main.cf
- docker cp $TMP_DIR/LIAM2-Server_main.cf $LIAM2_SERVER:/etc/postfix/main.cf
- docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
+docker cp $TMP_DIR/LIAM2-Server_main.cf $LIAM2_SERVER:/etc/postfix/main.cf
+docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
 
-# copy temp html dir to docker
+#copy temp html dir to docker
 docker cp $TMP_DIR/LIAM2-SERVER-html/. $LIAM2_SERVER:/var/www/html
 docker cp $TMP_DIR/LIAM2-CLIENT-html/. $LIAM2_CLIENT:/var/www/html
 
-
-#prepare fetch all command
+#prepare fetch all command and copy to contaier
 echo "prepare fetch all command"
 cp $SCRIPT/_bpmspace_base/fetch_all.php $TMP_DIR/fetch_all.php
 cp $SCRIPT/_bpmspace_base/fetch_all.sh $TMP_DIR/fetch_all.sh
-
+echo "copy fetch all command"
 docker exec -it $LIAM2_SERVER /bin/sh -c  "mkdir -p -- /var/www/script/"
-docker cp $TMP_DIR/fetch_all.php $LIAM2_SERVER:/var/www/html/fetch_all.php
+docker exec -it $LIAM2_SERVER /bin/sh -c  "mkdir -p -- /var/www/html/release_cmd/"
+docker cp $TMP_DIR/fetch_all.php $LIAM2_SERVER:/var/www/html/release_cmd/fetch_all.php
 docker cp $TMP_DIR/fetch_all.sh $LIAM2_SERVER:/var/www/script/fetch_all.sh
 
-
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "mkdir -p -- /var/www/script/"
-docker cp $TMP_DIR/fetch_all.php $LIAM2_CLIENT:/var/www/html/fetch_all.php
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "mkdir -p -- /var/www/html/release_cmd/"
+docker cp $TMP_DIR/fetch_all.php $LIAM2_CLIENT:/var/www/html/release_cmd/fetch_all.php
 docker cp $TMP_DIR/fetch_all.sh $LIAM2_CLIENT:/var/www/script/fetch_all.sh
 
 #prepare DB import command
@@ -168,57 +136,120 @@ cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_db.php $TMP_DIR/import_db.php
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_db.sh $TMP_DIR/import_db.sh
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_dbdiff.php $TMP_DIR/import_dbdiff.php
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/import_dbdiff.sh $TMP_DIR/import_dbdiff.sh
-
+#prepare DB modyfy parameter
+echo "prepare DB modyfy parameter"
 sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/import_db.sh
 sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/import_dbdiff.sh
 sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/import_db.sh
 sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/import_dbdiff.sh
-sed -i "s/LIAM2_SQLDUMP_FILE_DIFF/$LIAM2_SQLDUMP_FILE_DIFF/g" $TMP_DIR/import_dbdiff.sh
 sed -i "s/LIAM2_SQLDUMP_FILE/$LIAM2_SQLDUMP_FILE/g" $TMP_DIR/import_db.sh
+sed -i "s/LIAM2_SQLDUMP_FILE_DIFF/$LIAM2_SQLDUMP_FILE_DIFF/g" $TMP_DIR/import_dbdiff.sh
 
-docker cp $TMP_DIR/import_db.php $LIAM2_SERVER:/var/www/html/import_db.php
-docker cp $TMP_DIR/import_dbdiff.php $LIAM2_SERVER:/var/www/html/import_dbdiff.php
+: '
+echo "sleep 5s until enviroment is up"
+for i in {5..1}
+		do echo -e "\r"&& echo -n "$i." && sleep 1
+		done
+'
+
+#copy DB import script to container
+echo "copy DB import script to container"
+docker cp $TMP_DIR/import_db.php $LIAM2_SERVER:/var/www/html/release_cmd/import_db.php
+docker cp $TMP_DIR/import_dbdiff.php $LIAM2_SERVER:/var/www/html/release_cmd/import_dbdiff.php
 docker cp $TMP_DIR/import_db.sh $LIAM2_SERVER:/var/www/script/import_db.sh
 docker cp $TMP_DIR/import_dbdiff.sh $LIAM2_SERVER:/var/www/script/import_dbdiff.sh
 
-# git clone repos 
-docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
-docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
-
-# set owner and execute 
-echo "set owner and execute"
-docker exec -it $LIAM2_SERVER /bin/sh -c  "chown -R www-data:www-data /var/www/"
-docker exec -it $LIAM2_SERVER /bin/sh -c  "chmod +x /var/www/script/*.sh"
-docker exec -it $LIAM2_CLIENT /bin/sh -c  "chown -R www-data:www-data /var/www/"
-docker exec -it $LIAM2_CLIENT /bin/sh -c  "chmod +x /var/www/script/*.sh"
 
 # Restart Mail server and send testmail
-echo "Send Testmail"
+echo "config Mailserver and Send Testmail"
  docker exec -it $LIAM2_SERVER /bin/sh -c  "service postfix restart"
  docker exec -it $LIAM2_SERVER /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2 $PREFIX-Server\", date(DATE_RFC822), \"From: liam2 <liam2@bpmspace.net>\");'"
  docker exec -it $LIAM2_CLIENT /bin/sh -c  "service postfix restart"
  docker exec -it $LIAM2_CLIENT /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2 $PREFIX-Client\", date(DATE_RFC822), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
 
-cd $HOME
-#mail -s "ACCEPTANCE TEST LIAM SERVER" testuser@mailhog < $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE
-sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2-Server.html
-sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2-Client.html
+ # import DB
+echo "IMPORT DB on LIAM2"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "/var/www/script/import_db.sh"
+echo "IMPORT done"
+# git fetch all - reset repos 
+echo "git fetch all - reset repos"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+
+# set owner and execute 
+echo "set owner and execute"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "chown -R www-data:www-data /var/www/"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "find /var/www/html -type f -exec chmod 660 {} \;"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "find /var/www/html -type d -exec chmod 770 {} \;"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "find /var/www/script -type f -exec chmod 600 {} \;"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "find /var/www/script -type d -exec chmod 700 {} \;"
+docker exec -it $LIAM2_SERVER /bin/sh -c  "chmod +x /var/www/script/*.sh"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "chown -R www-data:www-data /var/www/"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/html -type f -exec chmod 660 {} \;"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/html -type d -exec chmod 770 {} \;"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type f -exec chmod 660 {} \;"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type d -exec chmod 770 {} \;"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "chmod +x /var/www/script/*.sh"
+
+
+# prepare Enviroment 
+echo "prepare Enviroment"s
+sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2
+sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Script
+sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Server
+sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Client
+sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.html
+sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
+sudo cp $SCRIPT/create_LIAM2.sh $DOCKERHOSTWWWPATH/LIAM2/Script/
+sudo cp $SCRIPT/LIAM2_STAGE_TEST_DEV/create_LIAM2.php $DOCKERHOSTWWWPATH/LIAM2/
+sudo chown -R www-data:www-data $DOCKERHOSTWWWPATH/LIAM2/
+sudo find $DOCKERHOSTWWWPATH/LIAM2 -type f -exec chmod 660 {} \;
+sudo find $DOCKERHOSTWWWPATH/LIAM2 -type d -exec chmod 700 {} \;
+sudo chmod +x $DOCKERHOSTWWWPATH/LIAM2/Script/create_LIAM2.sh
 
 printf "
-$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2-Server.html\n\r
-$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2-Client.html\n\r
-Mailhog http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP\n\r
-docker exec -it $LIAM2_SERVER bash \n\r
-docker exec -it $LIAM2_CLIENT bash \n\r
-docker exec -it $MARIADB bash \n\r
-docker exec -it $MAILHOG bash \n\r
+#### Test Protokoll
+
+	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Server\AcceptanceTest.html
+	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Client\AcceptanceTest.html
+	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\create_LIAM2.php
+
+
+#### MariaDB und Mail Server
+
+	Mailhog http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP
+	MariaDB mysql -u root -p$MARIADB_ROOT_PASSWD -h $HOSTNAME -P $MARIADB_EXT_PORT_SQL
+
+#### LIAM2 Server
+
+	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP 
+	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/fetch_all.php 
+	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_db.php 
+	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_dbdiff.php 
+	
+#### LIAM2 Client
+ 
+	http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP
+	http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP/release_cmd/fetch_all.php
+	
+#### Docker Commands
+
+	docker exec -it $LIAM2_SERVER bash
+	docker logs $LIAM2_SERVER  
+
+	docker exec -it $LIAM2_CLIENT bash
+	docker logs $LIAM2_CLIENT  
+
+	docker exec -it $MARIADB bash
+	docker logs $MARIADB 
+
+	docker exec -it $MAILHOG bash
+	docker logs $MAILHOG 
 "
 #printf "\n\r$LIAM2_ACCEPTANCETEST_VAR \n\r"
-
 #echo "LIAM2_SERVER: "$LIAM2_SERVER
 #echo "LIAM2_CLIENT: "$LIAM2_CLIENT
-#rm -rf $TMP_DIR
-
+#sudo rm -rf $TMP_DIR
 #if [ ! -d "$FOLDER" ] ; then
 #   git clone $URL $FOLDER
 #else
@@ -226,3 +257,4 @@ docker exec -it $MAILHOG bash \n\r
     #git pull $URL
 #fi
 
+cd $HOME
