@@ -1,11 +1,12 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
+
+#create TEMP Folder and SUB
 mkdir -p -- $TMP_DIR
-cd $TMP_DIR
 
 # get credentials of live DB
-source $DIR/db.secret.conf
+source $DIR/general.secret.conf
 
 #DUMP DB from Live DB
 mysqldump -u $USER -p$PASS bpmspace_coms_v1 --databases  --routines > $TMP_DIR/dump_coms_v1_DB_LIVE.sql
@@ -37,6 +38,7 @@ mysql -u root -p$PASS -h 172.28.44.99 --port 3306 < $TMP_DIR/dump_coms_v1_DB_TES
 # CAll anonymize ONLY on TEST
 echo "ANONYMIZE TEST STARTS"
 mysql -u root -p$PASS -h 172.28.44.99 --port 3306 -e "use bpmspace_coms_v1_TEST; CALL bpmspace_coms_v1_TEST.anonymize_coms();"
+# TEST IF DUMP IS anonymized else exit
 
 #Export TEST and remove not anonymzed TEST DUMP
 echo "EXPORT TEST STARTS"
@@ -45,15 +47,12 @@ rm $TMP_DIR/dump_coms_v1_DB_TEST_NOTANONYMIZED.sql
 echo "done ... "
 docker ps
 
-#docker stop MARIADB_TEMP-Server	
-#docker container rm -v MARIADB_TEMP-Server
-#sudo docker-compose -f $TMP_DIR/docker-compose.yml up -d
-#echo "sleep"
-#sleep 25s
 
-#mysql -u root -p$PASS -h 172.28.44.99 --port 3306 < $TMP_DIR/dump_coms_v1_DB_STAGE.sql
-#mysql -u root -p$PASS -h 172.28.44.99 --port 3306 < $TMP_DIR/dump_coms_v1_DB_TEST.sql
-
+# tar COMS Pfad inkl certificates
+# tar COMS Pfad EXCL certificates
+# TEST IF TAR is anonimized
+# copy in 2 volumes - NOT anonymized  / anonymized
+# start SFTP server only with anonymized
 
 cd $HOME
-#sudo rm -rf $TMP_DIR
+sudo rm -rf $TMP_DIR
