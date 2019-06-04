@@ -198,13 +198,15 @@ sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2
 sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Script
 sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Server
 sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Client
+sudo touch $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.htm
+sudo touch $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
 sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.html
 sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
 sudo cp $SCRIPT/create_LIAM2.sh $DOCKERHOSTWWWPATH/LIAM2/Script/
 sudo cp $SCRIPT/LIAM2_STAGE_TEST_DEV/create_LIAM2.php $DOCKERHOSTWWWPATH/LIAM2/
 sudo chown -R www-data:www-data $DOCKERHOSTWWWPATH/LIAM2/
 sudo find $DOCKERHOSTWWWPATH/LIAM2 -type f -exec chmod 660 {} \;
-sudo find $DOCKERHOSTWWWPATH/LIAM2 -type d -exec chmod 700 {} \;
+sudo find $DOCKERHOSTWWWPATH/LIAM2 -type d -exec chmod 770 {} \;
 sudo chmod +x $DOCKERHOSTWWWPATH/LIAM2/Script/create_LIAM2.sh
 
 printf "
