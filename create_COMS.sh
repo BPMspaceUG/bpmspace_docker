@@ -1,6 +1,6 @@
 #!/bin/bash
-# $VOLUME_PREFIX = TEST|DEV
-export VOLUME_PREFIX="TEST"
+# $VOLUME_PREFIX = TEST|DEV/TESTDEV
+export VOLUME_PREFIX="TEST"  
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
