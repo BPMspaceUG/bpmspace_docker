@@ -6,18 +6,18 @@ services:
         hostname: MARIADB_TEMP-Server
         container_name: MARIADB_TEMP-Server
         ports:
-            - 63367:3306
+            - MARIADB_EXT_PORT_SQL:3306
         environment:
             TZ: "Europe/Rome"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-            MYSQL_ROOT_PASSWORD: "AUTOMATICALLYSET"
+            MYSQL_ROOT_PASSWORD: "MARIADB_ROOT_PASSWD"
 
         networks:
             testing_net:
-                ipv4_address: 172.28.44.99
+                ipv4_address: MARIADB_IP
 networks:
     testing_net:
         ipam:
             driver: default
             config:
-                - subnet: 172.28.0.0/16
+                - subnet: DOCKERNETWORK/DOCKERNETMASK

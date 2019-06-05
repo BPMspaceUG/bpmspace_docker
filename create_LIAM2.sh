@@ -33,7 +33,7 @@ docker volume create --name $PREFIX-mailhog-data
 docker volume create --name $PREFIX-mailhog-config
 
 #download DB LIAM2 Structure and minimum Data
- wget --no-hsts $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
+wget --no-hsts $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
 # download git LIAM2 and LIAM2-client in a temp HTML dir + change owner
 git clone $LIAM2_GITHUB_REPO_URL $TMP_DIR/LIAM2-SERVER-html/
@@ -56,21 +56,11 @@ sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT-html/
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/docker-compose.yml $TMP_DIR/docker-compose.yml
 cp $SCRIPT/_bpmspace_base/Dockerfile $TMP_DIR/_bpmspace_base/Dockerfile
 sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
-sed -i "s/PREFIX/$PREFIX/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETWORK/$DOCKERNETWORK/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETMASK/$DOCKERNETMASK/g" $TMP_DIR/docker-compose.yml
-sed -i "s/LIAM2_DB_NAME/$LIAM2_DB_NAME/g" $TMP_DIR/docker-compose.yml
 sed -i "s/MARIADB_EXT_PORT_SQL/$MARIADB_EXT_PORT_SQL/g" $TMP_DIR/docker-compose.yml
 sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_LIAM2_CLIENT/$IP_LIAM2_CLIENT/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/docker-compose.yml
-sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_LIAM2/$IP_LIAM2/g" $TMP_DIR/docker-compose.yml
+
 
 # prepare LIAM SERVER Acceptance Mail 
 wget --no-hsts $LIAM2_SERVER_ACCEPTANCETEST_URL/$LIAM2_SERVER_ACCEPTANCETEST_FILE -P $TMP_DIR
@@ -251,7 +241,7 @@ printf "
 #printf "\n\r$LIAM2_ACCEPTANCETEST_VAR \n\r"
 #echo "LIAM2_SERVER: "$LIAM2_SERVER
 #echo "LIAM2_CLIENT: "$LIAM2_CLIENT
-#sudo rm -rf $TMP_DIR
+sudo rm -rf $TMP_DIR
 #if [ ! -d "$FOLDER" ] ; then
 #   git clone $URL $FOLDER
 #else
