@@ -12,11 +12,10 @@ docker volume create --name LIVE-COMS-www-data
 docker volume create --name LIVE-COMS-www-config
 
 # get credentials of live DB
-source $DIR/general.secret.conf
+source $SCRIPT/general.secret.conf
 
 #copy docker-compose to temp - replace parameter from config file - Start enviroment - ORDER of switches IMPORTANT
 cp $SCRIPT/COMS_LIVE/docker-compose.yml $TMP_DIR/docker-compose.yml
-cp $SCRIPT/_bpmspace_base/Dockerfile $TMP_DIR/_bpmspace_base/Dockerfile
 sed -i "s/MARIADB_ROOT_PASSWD/$MARIADB_ROOT_PASSWD/g" $TMP_DIR/docker-compose.yml
 sed -i "s/PREFIX/$PREFIX/g" $TMP_DIR/docker-compose.yml
 sed -i "s/DOCKERNETWORK/$DOCKERNETWORK/g" $TMP_DIR/docker-compose.yml
@@ -30,7 +29,7 @@ sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/docker-compose.yml
 docker run \
     -v LIVE-COMS-www-data-anonymous:/home/anonymous/data \
     -v LIVE-COMS-www-config-anonymous:/home/anonymous/config \
-    -p COMS_SFTP_PORT:22 -d --name $COMS_SFTP_SERVER atmoz/sftp  \
+    -p $COMS_SFTP_PORT:22 -d --name $COMS_SFTP_SERVER atmoz/sftp  \
     anonymous:$COMS_SFTP_PASS:1001
 docker exec -it $COMS_SFTP_SERVER /bin/sh -c  "chown anonymous /home/anonymous/* && adduser anonymous www-data"
 
@@ -52,7 +51,7 @@ echo "WAIT until dockers are UP"
 #    echo "."
 #	sleep 0.1;
 #done;
-sleep 25s
+sleep 50s
 #IMPORT STAGE an  NOT anaonymized TESTDB
 echo "IMPORT STAGE STARTS"
 mysql -u root -p$MARIADB_ROOT_PASSWD -h $MARIADB_IP --port 3306 < $TMP_DIR/dump_coms_v1_DB_STAGE.sql
