@@ -49,6 +49,7 @@ sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-con
 
 # copy LIAM CLIENT config to temp HTML dir
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2_Client_api.secret.inc.php
+sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/LIAM2_Client_api.secret.inc.php
 sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php $TMP_DIR/LIAM2-CLIENT-html/inc
 sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT-html/
 
@@ -67,10 +68,10 @@ sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/docker-compos
 sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_LIAM2_CLIENT/$IP_LIAM2_CLIENT/g" $TMP_DIR/docker-compose.yml
+sed -i "s/LIAM2_IP_CLIENT/$LIAM2_IP_CLIENT/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/docker-compose.yml
-sed -i "s/IP_LIAM2/$IP_LIAM2/g" $TMP_DIR/docker-compose.yml
+sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/docker-compose.yml
 
 # prepare LIAM SERVER Acceptance Mail 
 wget --no-hsts $LIAM2_SERVER_ACCEPTANCETEST_URL/$LIAM2_SERVER_ACCEPTANCETEST_FILE -P $TMP_DIR
@@ -241,7 +242,7 @@ printf "
 #printf "\n\r$LIAM2_ACCEPTANCETEST_VAR \n\r"
 #echo "LIAM2_SERVER: "$LIAM2_SERVER
 #echo "LIAM2_CLIENT: "$LIAM2_CLIENT
-sudo rm -rf $TMP_DIR
+#sudo rm -rf $TMP_DIR
 #if [ ! -d "$FOLDER" ] ; then
 #   git clone $URL $FOLDER
 #else
