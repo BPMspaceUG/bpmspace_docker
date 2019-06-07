@@ -72,6 +72,8 @@ sed -i "s/LIAM2_IP_CLIENT/$LIAM2_IP_CLIENT/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_HTTPS/$EXT_PORT_LIAM2_HTTPS/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_HTTP/$EXT_PORT_LIAM2_HTTP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/docker-compose.yml
+sed -i "s/PHPMYADMIN_IP/$PHPMYADMIN_IP/g" $TMP_DIR/docker-compose.yml
+sed -i "s/EXT_PORT_PHPMYADMIN_HTTP/$EXT_PORT_PHPMYADMIN_HTTP/g" $TMP_DIR/docker-compose.yml
 
 # prepare LIAM SERVER Acceptance Mail 
 wget --no-hsts $LIAM2_SERVER_ACCEPTANCETEST_URL/$LIAM2_SERVER_ACCEPTANCETEST_FILE -P $TMP_DIR
@@ -218,6 +220,8 @@ printf "
 #### MariaDB und Mail Server
 	Mailhog http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP
 	MariaDB mysql -u root -p$MARIADB_ROOT_PASSWD -h $HOSTNAME -P $MARIADB_EXT_PORT_SQL
+	MYPHPADMIN http://$HOSTNAME:$EXT_PORT_PHPMYADMIN_HTTP
+	
 #### LIAM2 Server
 	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP 
 	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/fetch_all.php 
@@ -235,7 +239,9 @@ printf "
 	docker exec -it $LIAM2_CLIENT bash
 	docker logs $LIAM2_CLIENT  
 	docker exec -it $MARIADB bash
-	docker logs $MARIADB 
+	docker logs $MARIADB
+	docker exec -it phpmyadmin bash
+	docker logs phpmyadmin 
 	docker exec -it $MAILHOG bash
 	docker logs $MAILHOG 
 "

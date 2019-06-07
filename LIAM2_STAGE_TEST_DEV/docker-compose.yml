@@ -55,7 +55,19 @@ services:
         networks:
             testing_net:
                 ipv4_address: MARIADB_IP
-                
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        environment:
+          - PMA_HOST=MARIADB_IP
+        links:
+            - mariadb
+        restart: always
+        ports:
+           - EXT_PORT_PHPMYADMIN_HTTP:80
+        networks:
+            testing_net:
+                ipv4_address: PHPMYADMIN_IP        
     mailhog:
         container_name: mailhog
         hostname: MAIL-Server
