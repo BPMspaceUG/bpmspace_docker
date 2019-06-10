@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-TMP_DIR=$HOME/tmp/$(date +"%m_%d_%Y_%s")
+TMP_DIR=/tmp/$(date +"%m_%d_%Y_%s")
 
 #create TEMP Folder and SUB
 mkdir -p -- $TMP_DIR
@@ -194,7 +194,48 @@ docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type f -exec ch
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type d -exec chmod 770 {} \;"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "chmod +x /var/www/script/*.sh"
 
+ENVIROMENTDESC="<h1>Test Protokoll</h1>
+<ul>
+<li><a href=\"$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\index.html\" target=\"_blank\" rel=\"noopener\">this Page</a></li>
+<li><a href=\"$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Server\AcceptanceTest.html\" target=\"_blank\" rel=\"noopener\">LIAM2 AcceptanceTest</a></li>
+<li><a href=\"$DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Client\AcceptanceTest.html\" target=\"_blank\" rel=\"noopener\">LIAM2 Client AcceptanceTest</a></li>
+</ul>
+<h2>Mail Server</h2>
+<ul>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP \">MAILHOG Catch all Server </a></li>
+</ul>
+<h2>MariaDB</h2>
+<ul>
+<li>mysql -u root -p$MARIADB_ROOT_PASSWD -h $HOSTNAME -P $MARIADB_EXT_PORT_SQL - MYPHPADMIN</li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_PHPMYADMIN_HTTP?pma_username=root&amp;pma_password$MARIADB_ROOT_PASSWD\"> PHP my Admin</a></li>
+</ul>
+<h2>LIAM2 Server</h2>
+<ul>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP \">LIAM2 Server</a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/fetch_all.php\">LIAM2 Server FETCH ALL</a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_db.php \">LIAM2 Server IMPORT ALL </a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_dbdiff.php \">LIAM2 Server IMPORT DIFF</a></li>
+</ul>
+<h2>LIAM2 Client</h2>
+<ul>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP \">LIAM2 Client</a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP/release_cmd/fetch_all.php\">LIAM2 Client FETCH ALL</a></li>
+</ul>
+<h2>Docker Commands</h2>
+<ul>
+<li>docker exec -it $LIAM2_SERVER bash</li>
+<li>docker logs $LIAM2_SERVER</li>
+<li>docker exec -it $LIAM2_CLIENT bash</li>
+<li>docker logs $LIAM2_CLIENT</li>
+<li>docker exec -it $MARIADB bash</li>
+<li>docker logs $MARIADB</li>
+<li>docker exec -it phpmyadmin bash</li>
+<li>docker logs phpmyadmin</li>
+<li>docker exec -it $MAILHOG bash</li>
+<li>docker logs $MAILHOG\"</li>
+</ul>"
 
+	
 # prepare Enviroment 
 echo "prepare Enviroment"s
 sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2
@@ -203,59 +244,19 @@ sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Server
 sudo mkdir -p -- $DOCKERHOSTWWWPATH/LIAM2/Client
 sudo touch $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.html
 sudo touch $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
-sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE >> $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.html
-sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE >> $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
-sudo cp $SCRIPT/create_LIAM2.sh $DOCKERHOSTWWWPATH/LIAM2/Script/
+sudo echo $ENVIROMENTDESC > $DOCKERHOSTWWWPATH/index.html
+sudo markdown $TMP_DIR/$LIAM2_SERVER_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Server/AcceptanceTest.html
+sudo markdown $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE > $DOCKERHOSTWWWPATH/LIAM2/Client/AcceptanceTest.html
+sudo cp $SCRIPT/create_LIAM2.sh /usr/lib/cgi-bin
 sudo cp $SCRIPT/LIAM2_STAGE_TEST_DEV/create_LIAM2.php $DOCKERHOSTWWWPATH/LIAM2/
 sudo chown -R www-data:www-data $DOCKERHOSTWWWPATH/LIAM2/
 sudo find $DOCKERHOSTWWWPATH/LIAM2 -type f -exec chmod 660 {} \;
 sudo find $DOCKERHOSTWWWPATH/LIAM2 -type d -exec chmod 770 {} \;
-sudo chmod +x $DOCKERHOSTWWWPATH/LIAM2/Script/create_LIAM2.sh
+sudo chown -R www-data:www-data /usr/lib/cgi-bin/*.sh
+sudo chmod +x /usr/lib/cgi-bin/*.sh
 
-printf "
-#### Test Protokoll
-	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Server\AcceptanceTest.html
-	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\Client\AcceptanceTest.html
-	$(echo "$DOCKERHOSTPROTOKOLL" | tr '[:upper:]' '[:lower:]')://$HOSTNAME:$DOCKERHOSTPORT\LIAM2\create_LIAM2.php
-#### MariaDB und Mail Server
-	Mailhog http://$HOSTNAME:$EXT_PORT_MAILHOG_HTTP
-	MariaDB mysql -u root -p$MARIADB_ROOT_PASSWD -h $HOSTNAME -P $MARIADB_EXT_PORT_SQL
-	MYPHPADMIN http://$HOSTNAME:$EXT_PORT_PHPMYADMIN_HTTP?pma_username=root&pma_password$MARIADB_ROOT_PASSWD
-	
-#### LIAM2 Server
-	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP 
-	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/fetch_all.php 
-	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_db.php 
-	http://$HOSTNAME:$EXT_PORT_LIAM2_HTTP/release_cmd/import_dbdiff.php 
-	
-#### LIAM2 Client
- 
-	http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP
-	http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP/release_cmd/fetch_all.php
-	
-#### Docker Commands
-	docker exec -it $LIAM2_SERVER bash
-	docker logs $LIAM2_SERVER  
-	docker exec -it $LIAM2_CLIENT bash
-	docker logs $LIAM2_CLIENT  
-	docker exec -it $MARIADB bash
-	docker logs $MARIADB
-	docker exec -it phpmyadmin bash
-	docker logs phpmyadmin 
-	docker exec -it $MAILHOG bash
-	docker logs $MAILHOG 
-"
-#printf "\n\r$LIAM2_ACCEPTANCETEST_VAR \n\r"
-#echo "LIAM2_SERVER: "$LIAM2_SERVER
-#echo "LIAM2_CLIENT: "$LIAM2_CLIENT
-#sudo rm -rf $TMP_DIR
-#if [ ! -d "$FOLDER" ] ; then
-#   git clone $URL $FOLDER
-#else
-    #cd "$FOLDER"
-    #git pull $URL
-#fi
-
+echo "more info under $DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\index.html"
+sudo rm -rf $TMP_DIR
 cd $HOME
 
 
