@@ -18,7 +18,7 @@ create_docker_volumes() {
 
 # default Value
 steps_all=true
-var_enviromenet=( LIAM2 LIAM2_CLIENT SQMS SQMS_CLIENT SQMS_EXPORT SQMS2 SQMS2_CLIENT COMS _CLIENT BWNG WWWbpmspace WWWico WWWmitsm)
+var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS _CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
 
 
 
@@ -56,7 +56,7 @@ while [ "$1" != "" ]; do
 								var_enviromenet=()
                                 case $tempvar in
 									ALL  )
-										var_enviromenet=( LIAM2 LIAM2_CLIENT SQMS SQMS_CLIENT SQMS_EXPORT SQMS2 SQMS2_CLIENT COMS _CLIENT BWNG WWWbpmspace WWWico WWWmitsm)
+										var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS _CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
 										;;
 									LIAM2  )
 										var_enviromenet+=( "LIAM2" )
