@@ -101,11 +101,10 @@ while [ "$1" != "" ]; do
 										* )usage
 											exit 1
 									esac
-									echo $2
 									if [[ $2 == "-"* ]] || [[ $2 == "" ]]; then
 										break
-										echo "xs"
 									fi
+									shift
 								done
                                 ;;
         -T | --typ )         	shift
