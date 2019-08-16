@@ -52,7 +52,8 @@ while [ "$1" != "" ]; do
         -E | --enviroment )     shift
 								tempvar=${1^^}
 								var_enviromenet=()
-								while [ TRUE = TRUE ]
+								var_temp = TRUE
+								while [ var_temp == TRUE ]
 								do
 									case $tempvar in
 										ALL  )
@@ -102,6 +103,7 @@ while [ "$1" != "" ]; do
 									esac
 									if [[ $2 == "-"* || $2 == "" ]]; then
 										break
+										var_temp = FALSE
 									fi
 								done
                                 ;;
