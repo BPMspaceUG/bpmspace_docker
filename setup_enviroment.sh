@@ -178,7 +178,7 @@ done
 
 string="My long string"
 if [[ $string == *"My long"* ]]; then
-  echo "It's there!"
+  echo "found!"
 fi
 
 # create docker volumes !! VOLUMES ONLY FOR LIVE AND DEV SYSTEM !!
