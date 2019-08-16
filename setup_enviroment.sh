@@ -18,10 +18,8 @@ create_docker_volumes() {
 
 # default Value
 steps_all=true
-var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS _CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
-
-
-
+var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
+var_type=( "TEST" "DEV" )
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -56,7 +54,7 @@ while [ "$1" != "" ]; do
 								var_enviromenet=()
                                 case $tempvar in
 									ALL  )
-										var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS _CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
+										var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
 										;;
 									LIAM2  )
 										var_enviromenet+=( "LIAM2" )
@@ -103,8 +101,11 @@ while [ "$1" != "" ]; do
                                 ;;
         -T | --type )         	shift
                                 tempvar=${1^^}
-								typ_devtest=false
+								var_type=()
                                 case $tempvar in
+									ALL)
+										var_type=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
+										;;
 									LIVE)
 										typ_live=true
 										;;
@@ -156,7 +157,10 @@ done
 
 for i in "${var_enviromenet[@]}"
 do
-	echo $i
+	for j in "${var_type[@]}"
+	do
+		echo $i $j
+	done
 done
 : '
 # create docker volumes !! VOLUMES ONLY FOR LIVE AND DEV SYSTEM !!
