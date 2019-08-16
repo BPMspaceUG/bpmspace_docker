@@ -52,7 +52,7 @@ while [ "$1" != "" ]; do
         -E | --enviroment )     shift
 								tempvar=${1^^}
 								var_enviromenet=()
-								var_temp = TRUE
+								var_temp=TRUE
 								while [ $var_temp == TRUE ]
 								do
 									case $tempvar in
