@@ -19,7 +19,7 @@ create_docker_volumes() {
 # default Value
 steps_all=true
 var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
-var_type=( "TEST" "DEV" )
+var_typ=( "TEST" "DEV" )
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -99,12 +99,12 @@ while [ "$1" != "" ]; do
 										exit 1
 								esac
                                 ;;
-        -T | --type )         	shift
+        -T | --typ )         	shift
                                 tempvar=${1^^}
-								var_type=()
+								var_typ=()
                                 case $tempvar in
 									ALL)
-										var_type=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
+										var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 										;;
 									LIVE)
 										typ_live=true
@@ -155,7 +155,7 @@ while [ "$1" != "" ]; do
 done
 
 
-for j in "${var_type[@]}"
+for j in "${var_typ[@]}"
 do
 	for i in "${var_enviromenet[@]}"
 	do
