@@ -155,11 +155,11 @@ while [ "$1" != "" ]; do
 done
 
 
-for i in "${var_enviromenet[@]}"
+for j in "${var_type[@]}"
 do
-	for j in "${var_type[@]}"
+	for i in "${var_enviromenet[@]}"
 	do
-		echo $i $j
+		echo $i"_"$j
 	done
 done
 : '
