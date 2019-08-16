@@ -52,52 +52,58 @@ while [ "$1" != "" ]; do
         -E | --enviroment )     shift
 								tempvar=${1^^}
 								var_enviromenet=()
-                                case $tempvar in
-									ALL  )
-										var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
-										;;
-									LIAM2  )
-										var_enviromenet+=( "LIAM2" )
-										;;
-									LIAM2_CLIENT  )
-										var_enviromenet+=( "LIAM2_CLIENT" )
-										;;
-									SQMS  )
-										var_enviromenet+=( "SQMS" )
-										;;
-									SQMS_CLIENT  )
-										var_enviromenet+=( "SQMS_CLIENT" )
-										;;
-									SQMS_EXPORT  )
-										var_enviromenet+=( "SQMS_EXPORT" )
-										;;
-									SQMS2  )
-										var_enviromenet+=( "SQMS2" )
-										;;
-									SQMS2_CLIENT  )
-										var_enviromenet+=( "SQMS2_CLIENT" )
-										;;
-									COMS )
-										var_enviromenet+=( "COMS" )
-										;;
-									COMS_CLIENT )
-										var_enviromenet+=( "COMS_CLIENT" )
-										;;
-									BWNG )
-										var_enviromenet+=( "BWNG" )
-										;;
-									WWWbpmspace )
-										var_enviromenet+=( "WWWbpmspace" )
-										;;
-									WWWico )
-										var_enviromenet+=( "WWWico" )
-										;;
-									WWWmitsm )
-										var_enviromenet+=( "WWWmitsm" )
-										;;
-									* )usage
-										exit 1
-								esac
+								while [ TRUE = TRUE ]
+								do
+									case $tempvar in
+										ALL  )
+											var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
+											;;
+										LIAM2  )
+											var_enviromenet+=( "LIAM2" )
+											;;
+										LIAM2_CLIENT  )
+											var_enviromenet+=( "LIAM2_CLIENT" )
+											;;
+										SQMS  )
+											var_enviromenet+=( "SQMS" )
+											;;
+										SQMS_CLIENT  )
+											var_enviromenet+=( "SQMS_CLIENT" )
+											;;
+										SQMS_EXPORT  )
+											var_enviromenet+=( "SQMS_EXPORT" )
+											;;
+										SQMS2  )
+											var_enviromenet+=( "SQMS2" )
+											;;
+										SQMS2_CLIENT  )
+											var_enviromenet+=( "SQMS2_CLIENT" )
+											;;
+										COMS )
+											var_enviromenet+=( "COMS" )
+											;;
+										COMS_CLIENT )
+											var_enviromenet+=( "COMS_CLIENT" )
+											;;
+										BWNG )
+											var_enviromenet+=( "BWNG" )
+											;;
+										WWWbpmspace )
+											var_enviromenet+=( "WWWbpmspace" )
+											;;
+										WWWico )
+											var_enviromenet+=( "WWWico" )
+											;;
+										WWWmitsm )
+											var_enviromenet+=( "WWWmitsm" )
+											;;
+										* )usage
+											exit 1
+									esac
+									if [[ $2 == "-"* || $2 == "" ]]; then
+										breake
+									fi
+								done
                                 ;;
         -T | --typ )         	shift
                                 tempvar=${1^^}
@@ -159,6 +165,22 @@ do
 	done
 done
 : '
+while [ condition ]
+do
+   statements1      #Executed as long as condition is true and/or, up to a disaster-condition if any.
+   statements2
+  if (disaster-condition)
+  then
+	break       	   #Abandon the while lopp.
+  fi
+  statements3          #While good and, no disaster-condition.
+done
+
+string='My long string'
+if [[ $string == *"My long"* ]]; then
+  echo "It's there!"
+fi
+
 # create docker volumes !! VOLUMES ONLY FOR LIVE AND DEV SYSTEM !!
 if [ $typ_live ]; then
 	if [ $steps_all | $steps_vol ]; then
