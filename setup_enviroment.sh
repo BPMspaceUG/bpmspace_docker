@@ -51,7 +51,7 @@ while [ "$1" != "" ]; do
                                 ;;
         -E | --enviroment )     shift
 								var_enviromenet=()
-								while [ $tempwhile == TRUE ]
+								while [ "$1" != "" ]
 								do
 									tempvar=${1^^}
 									case $tempvar in
