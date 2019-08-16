@@ -107,23 +107,19 @@ while [ "$1" != "" ]; do
 										var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 										;;
 									LIVE)
-										typ_live=true
+										var_typ=( "LIVE")
 										;;
 									REF)
-										typ_ref=true
+										var_typ=( "REF" )
 										;;
 									STAGE)
-										typ_stage=true
+										var_typ=( "STAGE" )
 										;;
 									TEST)
-										typ_test=true
+										var_typ=( "TEST" )
 										;;
 									DEV)
-										typ_dev=true
-										;;
-									DEVTEST)
-										typ_test=true
-										typ_dev=true
+										var_typ=( "DEV" )
 										;;
 									* )usage
 										exit 1
