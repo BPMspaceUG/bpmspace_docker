@@ -50,11 +50,10 @@ while [ "$1" != "" ]; do
 								esac
                                 ;;
         -E | --enviroment )     shift
-								tempvar=${1^^}
 								var_enviromenet=()
-								tempwhile=TRUE
 								while [ $tempwhile == TRUE ]
 								do
+									tempvar=${1^^}
 									case $tempvar in
 										ALL  )
 											var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
