@@ -101,7 +101,7 @@ while [ "$1" != "" ]; do
 											exit 1
 									esac
 									if [[ $2 == "-"* || $2 == "" ]]; then
-										breake
+										break
 									fi
 								done
                                 ;;
