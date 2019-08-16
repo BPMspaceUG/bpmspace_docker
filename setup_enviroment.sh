@@ -176,7 +176,7 @@ do
   statements3          #While good and, no disaster-condition.
 done
 
-string='My long string'
+string="My long string"
 if [[ $string == *"My long"* ]]; then
   echo "It's there!"
 fi
