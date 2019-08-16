@@ -53,7 +53,7 @@ while [ "$1" != "" ]; do
 								tempvar=${1^^}
 								var_enviromenet=()
 								var_temp = TRUE
-								while [ var_temp == TRUE ]
+								while [ $var_temp == TRUE ]
 								do
 									case $tempvar in
 										ALL  )
@@ -102,8 +102,7 @@ while [ "$1" != "" ]; do
 											exit 1
 									esac
 									if [[ $2 == "-"* || $2 == "" ]]; then
-										break
-										var_temp = FALSE
+										$var_temp = FALSE
 									fi
 								done
                                 ;;
