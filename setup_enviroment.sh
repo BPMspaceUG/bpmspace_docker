@@ -7,7 +7,7 @@ else
 fi
 
 usage() {
-sleep 1
+echo error
 }
 
 create_docker_volumes() {
