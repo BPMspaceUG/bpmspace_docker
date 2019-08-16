@@ -102,7 +102,7 @@ while [ "$1" != "" ]; do
 											exit 1
 									esac
 									if [[ $2 == "-"* || $2 == "" ]]; then
-										$var_temp = FALSE
+										$var_temp=FALSE
 									fi
 								done
                                 ;;
