@@ -101,8 +101,9 @@ while [ "$1" != "" ]; do
 										* )usage
 											exit 1
 									esac
-									if [ $2 == "-"* ] || [ $2 == "" ]; then
+									if [[ $2 == "-"* ]] || [[ $2 == "" ]]; then
 										break
+										echo "xs"
 									fi
 								done
                                 ;;
