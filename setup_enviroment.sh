@@ -159,7 +159,7 @@ for j in "${var_typ[@]}"
 do
 	for i in "${var_enviromenet[@]}"
 	do
-		echo $i"_"$j
+		echo $j"_"$i
 	done
 done
 : '
