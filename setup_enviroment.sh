@@ -7,7 +7,7 @@ else
 fi
 
 usage() {
-echo error
+	echo error $1
 }
 
 create_docker_volumes() {
@@ -18,7 +18,7 @@ create_docker_volumes() {
 
 # default Value
 steps_all=true
-var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
+var_enviroment=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
 var_typ=( "TEST" "DEV" )
 
 while [ "$1" != "" ]; do
@@ -45,59 +45,64 @@ while [ "$1" != "" ]; do
 									GIT  )
 										steps_git=true
 										;;
-									* )usage
+									* )
+										usage steps
 										exit 1
 								esac
                                 ;;
         -E | --enviroment )     shift
-								var_enviromenet=()
+								var_enviroment=()
 								while [ "$1" != "" ]
 								do
 									tempvar=${1^^}
 									case $tempvar in
 										ALL  )
-											var_enviromenet=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm")
+											var_enviroment=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
 											;;
 										LIAM2  )
-											var_enviromenet+=( "LIAM2" )
+											var_enviroment+=( "LIAM2" )
 											;;
 										LIAM2_CLIENT  )
-											var_enviromenet+=( "LIAM2_CLIENT" )
+											var_enviroment+=( "LIAM2_CLIENT" )
 											;;
 										SQMS  )
-											var_enviromenet+=( "SQMS" )
+											var_enviroment+=( "SQMS" )
 											;;
 										SQMS_CLIENT  )
-											var_enviromenet+=( "SQMS_CLIENT" )
+											var_enviroment+=( "SQMS_CLIENT" )
 											;;
 										SQMS_EXPORT  )
-											var_enviromenet+=( "SQMS_EXPORT" )
+											var_enviroment+=( "SQMS_EXPORT" )
 											;;
 										SQMS2  )
-											var_enviromenet+=( "SQMS2" )
+											var_enviroment+=( "SQMS2" )
 											;;
 										SQMS2_CLIENT  )
-											var_enviromenet+=( "SQMS2_CLIENT" )
+											var_enviroment+=( "SQMS2_CLIENT" )
 											;;
 										COMS )
-											var_enviromenet+=( "COMS" )
+											var_enviroment+=( "COMS" )
 											;;
 										COMS_CLIENT )
-											var_enviromenet+=( "COMS_CLIENT" )
+											var_enviroment+=( "COMS_CLIENT" )
 											;;
 										BWNG )
-											var_enviromenet+=( "BWNG" )
+											var_enviroment+=( "BWNG" )
 											;;
 										WWWbpmspace )
-											var_enviromenet+=( "WWWbpmspace" )
+											var_enviroment+=( "WWWbpmspace" )
 											;;
 										WWWico )
-											var_enviromenet+=( "WWWico" )
+											var_enviroment+=( "WWWico" )
 											;;
 										WWWmitsm )
-											var_enviromenet+=( "WWWmitsm" )
+											var_enviroment+=( "WWWmitsm" )
 											;;
-										* )usage
+										MOODLE )
+											var_enviroment+=( "MOODLE" )
+											;;
+										* )
+											usage enviroment
 											exit 1
 									esac
 									if [[ $2 == "-"* ]] || [[ $2 == "" ]]; then
@@ -107,30 +112,38 @@ while [ "$1" != "" ]; do
 								done
                                 ;;
         -T | --typ )         	shift
-                                tempvar=${1^^}
 								var_typ=()
-                                case $tempvar in
-									ALL)
-										var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
-										;;
-									LIVE)
-										var_typ=( "LIVE")
-										;;
-									REF)
-										var_typ=( "REF" )
-										;;
-									STAGE)
-										var_typ=( "STAGE" )
-										;;
-									TEST)
-										var_typ=( "TEST" )
-										;;
-									DEV)
-										var_typ=( "DEV" )
-										;;
-									* )usage
-										exit 1
-								esac
+								while [ "$1" != "" ]
+								do
+									tempvar=${1^^}
+									case $tempvar in
+										ALL)
+											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
+											;;
+										LIVE)
+											var_typ=( "LIVE")
+											;;
+										REF)
+											var_typ=( "REF" )
+											;;
+										STAGE)
+											var_typ=( "STAGE" )
+											;;
+										TEST)
+											var_typ=( "TEST" )
+											;;
+										DEV)
+											var_typ=( "DEV" )
+											;;
+										* )
+											usage typ
+											exit 1
+										esac
+									if [[ $2 == "-"* ]] || [[ $2 == "" ]]; then
+										break
+									fi
+									shift
+								done
                                 ;;
         -A | --anonymize )      ;;
         -B | --backup )      	shift
@@ -144,14 +157,15 @@ while [ "$1" != "" ]; do
 										;;
 									IMAGES)
 										;;
-									* )usage
+									* )
+										usage backup
 										exit 1
 								esac
 								;;
-        -h | --help )           usage
+        -h | --help )           usage help
                                 exit
                                 ;;
-        * )                     usage
+        * )                     usage general
                                 exit 1
     esac
     shift
@@ -160,7 +174,7 @@ done
 
 for j in "${var_typ[@]}"
 do
-	for i in "${var_enviromenet[@]}"
+	for i in "${var_enviroment[@]}"
 	do
 		echo $j"_"$i
 	done
