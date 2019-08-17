@@ -121,19 +121,19 @@ while [ "$1" != "" ]; do
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 											;;
 										LIVE)
-											var_typ=( "LIVE")
+											var_typ+=( "LIVE")
 											;;
 										REF)
-											var_typ=( "REF" )
+											var_typ+=( "REF" )
 											;;
 										STAGE)
-											var_typ=( "STAGE" )
+											var_typ+=( "STAGE" )
 											;;
 										TEST)
-											var_typ=( "TEST" )
+											var_typ+=( "TEST" )
 											;;
 										DEV)
-											var_typ=( "DEV" )
+											var_typ+=( "DEV" )
 											;;
 										* )
 											usage typ
