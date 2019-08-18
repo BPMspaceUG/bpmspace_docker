@@ -1,5 +1,5 @@
 #!/bin/bash
-var_script_name="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+var_script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
 ^
 if [ $# -gt 0 ]; then
@@ -21,7 +21,7 @@ create_docker_volumes() {
 # default Value
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
+var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 
@@ -61,7 +61,7 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										ALL  )
-											var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
+											var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 											;;
 										BASE   )
 											var_enviroment+=( "BASE" )
@@ -93,8 +93,8 @@ while [ "$1" != "" ]; do
 										COMS_CLIENT )
 											var_enviroment+=( "COMS_CLIENT" )
 											;;
-										BWNG )
-											var_enviroment+=( "BWNG" )
+										BWNGmitsm )
+											var_enviroment+=( "BWNGmitsm" )
 											;;
 										WWWbpmspace )
 											var_enviroment+=( "WWWbpmspace" )
@@ -105,8 +105,8 @@ while [ "$1" != "" ]; do
 										WWWmitsm )
 											var_enviroment+=( "WWWmitsm" )
 											;;
-										MOODLE )
-											var_enviroment+=( "MOODLE" )
+										MOODLEico )
+											var_enviroment+=( "MOODLEico" )
 											;;
 										* )
 											usage enviroment
@@ -204,8 +204,12 @@ do
 	for var_enviroment_i in "${var_enviroment[@]}"
 	do
 		echo $var_typ_j"_"$var_enviroment_i
+		mkdir -p -- $var_script_path/$var_enviroment_i
+		touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
+		touch -a $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
 	done
-done
+done 
+
 : '
 while [ condition ]
 do
@@ -278,14 +282,14 @@ if [ $typ_live ]; then
 			create_docker_volumes LIVE COMS2-CLIENT
 		fi
 		
-		#BWNG CLIENT
-		if [ $env_all | $env_bwng ]; then
-			create_docker_volumes LIVE BWNG
+		#BWNGmitsm CLIENT
+		if [ $env_all | $env_BWNGmitsm ]; then
+			create_docker_volumes LIVE BWNGmitsm
 		fi
 		
 		#WWWbpmspace
 		if [ $env_all | $env_www_bpm ]; then
-			create_docker_volumes LIVE BWNG-WWW
+			create_docker_volumes LIVE BWNGmitsm-WWW
 		fi
 		#WWWico
 		if [ $env_all | $env_www_ico ]; then
