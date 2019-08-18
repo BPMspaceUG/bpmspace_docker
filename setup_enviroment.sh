@@ -213,7 +213,7 @@ do
 		echo $var_typ_j"_"$var_enviroment_i
 		mkdir -p -- $var_script_path/$var_enviroment_i
 		touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
-		echo $test_docker_compose_yml >> $var_script_path/$var_enviroment_i/docker-compose.yml
+		echo $test_docker_compose_yml > $var_script_path/$var_enviroment_i/docker-compose.yml
 		touch -a $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
 	done
 done 
