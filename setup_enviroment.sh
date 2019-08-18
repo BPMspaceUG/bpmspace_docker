@@ -28,7 +28,7 @@ create_docker_volumes() {
 # default Value
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 
@@ -38,22 +38,22 @@ while [ "$1" != "" ]; do
 								var_temp_arguments=${1^^}
 								var_steps_all=false
                                 case $var_temp_arguments in
-									ALL  )
+									"ALL"  )
 										var_steps_all=true
 										;;
-									VOLUMES  )
+									"VOLUMES"  )
 										var_steps_vol=true
 										;;
-									COMPOSE  )
+									"COMPOSE"  )
 										var_steps_com=true
 										;;
-									RUN  )
+									"RUN"  )
 										var_steps_run=true
 										;;
-									SQL  )
+									"SQL"  )
 										var_steps_sql=true
 										;;
-									GIT  )
+									"GIT"  )
 										var_steps_git=true
 										;;
 									* )
@@ -68,7 +68,7 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										"ALL"  )
-											var_enviroment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+											var_enviroment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
 											;;
 										"BASE"   )
 											var_enviroment+=( "BASE" )
@@ -76,14 +76,14 @@ while [ "$1" != "" ]; do
 										"LIAM2_ICO"  )
 											var_enviroment+=( "LIAM2_ICO" )
 											;;
-										"LIAM2_CLIENT"  )
-											var_enviroment+=( "LIAM2_CLIENT" )
+										"LIAM2_CLIENT_ICO"  )
+											var_enviroment+=( "LIAM2_CLIENT_ICO" )
 											;;
-										"SQMS"  )
-											var_enviroment+=( "SQMS" )
+										"SQMS_ICO"  )
+											var_enviroment+=( "SQMS_ICO" )
 											;;
-										"SQMS_CLIENT"  )
-											var_enviroment+=( "SQMS_CLIENT" )
+										"SQMS_CLIENT_ICO"  )
+											var_enviroment+=( "SQMS_CLIENT_ICO" )
 											;;
 										"SQMS_EXPORT"  )
 											var_enviroment+=( "SQMS_EXPORT" )
@@ -94,26 +94,26 @@ while [ "$1" != "" ]; do
 										"SQMS2_CLIENT"  )
 											var_enviroment+=( "SQMS2_CLIENT" )
 											;;
-										"COMS" )
-											var_enviroment+=( "COMS" )
+										"COMS_ICO" )
+											var_enviroment+=( "COMS_ICO" )
 											;;
-										"COMS_CLIENT" )
-											var_enviroment+=( "COMS_CLIENT" )
+										"COMS_CLIENT_ICO" )
+											var_enviroment+=( "COMS_CLIENT_ICO" )
 											;;
-										"BWNGmitsm" )
-											var_enviroment+=( "BWNGmitsm" )
+										"BWNG_MITSM" )
+											var_enviroment+=( "BWNG_MITSM" )
 											;;
-										"WWWbpmspace" )
-											var_enviroment+=( "WWWbpmspace" )
+										"WWW_BPMSPACE" )
+											var_enviroment+=( "WWW_BPMSPACE" )
 											;;
-										"WWWico" )
-											var_enviroment+=( "WWWico" )
+										"WWW_ICO" )
+											var_enviroment+=( "WWW_ICO" )
 											;;
-										"WWWmitsm" )
-											var_enviroment+=( "WWWmitsm" )
+										"WWW_MITSM" )
+											var_enviroment+=( "WWW_MITSM" )
 											;;
-										"MOODLEico" )
-											var_enviroment+=( "MOODLEico" )
+										"MOODLE_ICO" )
+											var_enviroment+=( "MOODLE_ICO" )
 											;;
 										* )
 											usage enviroment
@@ -295,15 +295,15 @@ if [ $typ_live ]; then
 			create_docker_volumes LIVE BWNGmitsm
 		fi
 		
-		#WWWbpmspace
+		#WWW_BPMSPACE
 		if [ $env_all | $env_www_bpm ]; then
 			create_docker_volumes LIVE BWNGmitsm-WWW
 		fi
-		#WWWico
+		#WWW_ICO
 		if [ $env_all | $env_www_ico ]; then
 			create_docker_volumes LIVE ICO-WWW
 		fi
-		#WWWmitsm
+		#WWW_MITSM
 		if [ $env_all | $env_www_mitsm ]; then
 			create_docker_volumes LIVE MITSM-WWWM
 		fi
