@@ -18,7 +18,7 @@ create_docker_volumes() {
 
 # default Value
 steps_all=true
-var_enviroment=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
+var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
 var_typ=( "TEST" "DEV" )
 
 while [ "$1" != "" ]; do
@@ -57,7 +57,10 @@ while [ "$1" != "" ]; do
 									tempvar=${1^^}
 									case $tempvar in
 										ALL  )
-											var_enviroment=( "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
+											var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
+											;;
+										BASE   )
+											var_enviroment+=( "BASE" )
 											;;
 										LIAM2  )
 											var_enviroment+=( "LIAM2" )
@@ -113,15 +116,18 @@ while [ "$1" != "" ]; do
                                 ;;
         -T | --typ )         	shift
 								var_typ=()
+								var_step_all=false
 								while [ "$1" != "" ]
 								do
 									tempvar=${1^^}
 									case $tempvar in
 										ALL)
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
+											var_step_all=true
 											;;
 										LIVE)
 											var_typ+=( "LIVE")
+											var_step_live=true
 											;;
 										REF)
 											var_typ+=( "REF" )
@@ -134,6 +140,7 @@ while [ "$1" != "" ]; do
 											;;
 										DEV)
 											var_typ+=( "DEV" )
+											var_step_dev=true
 											;;
 										* )
 											usage typ
@@ -146,6 +153,7 @@ while [ "$1" != "" ]; do
 								done
                                 ;;
         -A | --anonymize )      ;;
+		-R | --release )        ;;
         -B | --backup )      	shift
                                 tempvar=${1^^}
                                 case $tempvar in
