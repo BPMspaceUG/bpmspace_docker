@@ -28,7 +28,7 @@ create_docker_volumes() {
 # default Value
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 
@@ -68,7 +68,7 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										ALL  )
-											var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+											var_enviroment=(  "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 											;;
 										BASE   )
 											var_enviroment+=( "BASE" )
