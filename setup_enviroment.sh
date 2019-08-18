@@ -1,7 +1,14 @@
 #!/bin/bash
 var_script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
-^
+
+
+test_docker_compose_yml="
+version: "3"
+services:
+  base:
+    image: hello-world
+"
 if [ $# -gt 0 ]; then
     echo "Your command line contains $# arguments"
 else
@@ -206,6 +213,7 @@ do
 		echo $var_typ_j"_"$var_enviroment_i
 		mkdir -p -- $var_script_path/$var_enviroment_i
 		touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
+		echo $test_docker_compose_yml >> $var_script_path/$var_enviroment_i/docker-compose.yml
 		touch -a $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
 	done
 done 
