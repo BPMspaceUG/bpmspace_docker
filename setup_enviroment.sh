@@ -67,52 +67,52 @@ while [ "$1" != "" ]; do
 								do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
-										ALL  )
+										"ALL"  )
 											var_enviroment=(  "BASE" "LIAM2_ico" "LIAM2_CLIENT_ico" "SQMS_ico" "SQMS_CLIENT_ico" "SQMS_EXPORT_ico" "SQMS2_ico" "SQMS2_CLIENT_ico" "COMS" "COMS_CLIENT" "BWNG_mitsm" "WWW_bpmspace" "WWW_ico" "WWW_mitsm" "MOODLE_ico" )
 											;;
-										BASE   )
+										"BASE"   )
 											var_enviroment+=( "BASE" )
 											;;
-										LIAM2_ico  )
+										"LIAM2_ico"  )
 											var_enviroment+=( "LIAM2_ico" )
 											;;
-										LIAM2_CLIENT_ico  )
+										"LIAM2_CLIENT_ico"  )
 											var_enviroment+=( "LIAM2_CLIENT_ico" )
 											;;
-										SQMS_ico  )
+										"SQMS_ico"  )
 											var_enviroment+=( "SQMS_ico" )
 											;;
-										SQMS_CLIENT_ico  )
+										"SQMS_CLIENT_ico"  )
 											var_enviroment+=( "SQMS_CLIENT_ico" )
 											;;
-										SQMS_EXPORT_ico  )
+										"SQMS_EXPORT_ico"  )
 											var_enviroment+=( "SQMS_EXPORT_ico" )
 											;;
-										SQMS2_ico  )
+										"SQMS2_ico"  )
 											var_enviroment+=( "SQMS2_ico" )
 											;;
-										SQMS2_CLIENT_ico  )
+										"SQMS2_CLIENT_ico"  )
 											var_enviroment+=( "SQMS2_CLIENT_ico" )
 											;;
-										COMS_ico )
+										"COMS_ico" )
 											var_enviroment+=( "COMS_ico" )
 											;;
-										COMS_CLIENT_ico )
+										"COMS_CLIENT_ico" )
 											var_enviroment+=( "COMS_CLIENT_ico" )
 											;;
-										BWNG_mitsm )
+										"BWNG_mitsm" )
 											var_enviroment+=( "BWNG_mitsm" )
 											;;
-										WWW_bpmspace )
+										"WWW_bpmspace" )
 											var_enviroment+=( "WWW_bpmspace" )
 											;;
-										WWW_ico )
+										"WWW_ico" )
 											var_enviroment+=( "WWW_ico" )
 											;;
-										WWW_mitsm )
+										"WWW_mitsm" )
 											var_enviroment+=( "WWW_mitsm" )
 											;;
-										MOODLE_ico )
+										"MOODLE_ico" )
 											var_enviroment+=( "MOODLE_ico" )
 											;;
 										* )
