@@ -1,5 +1,7 @@
 #!/bin/bash
-
+var_script_name="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
+^
 if [ $# -gt 0 ]; then
     echo "Your command line contains $# arguments"
 else
@@ -17,33 +19,35 @@ create_docker_volumes() {
 }
 
 # default Value
-steps_all=true
+var_steps_all=true
+var_typ_all=true
 var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
 var_typ=( "TEST" "DEV" )
+var_release_full=true
 
 while [ "$1" != "" ]; do
     case $1 in
         -S | --steps )     		shift
-								tempvar=${1^^}
-								steps_all=false
-                                case $tempvar in
+								var_temp_arguments=${1^^}
+								var_steps_all=false
+                                case $var_temp_arguments in
 									ALL  )
-										steps_all=true
+										var_steps_all=true
 										;;
 									VOLUMES  )
-										steps_vol=true
+										var_steps_vol=true
 										;;
 									COMPOSE  )
-										steps_com=true
+										var_steps_com=true
 										;;
 									RUN  )
-										steps_run=true
+										var_steps_run=true
 										;;
 									SQL  )
-										steps_sql=true
+										var_steps_sql=true
 										;;
 									GIT  )
-										steps_git=true
+										var_steps_git=true
 										;;
 									* )
 										usage steps
@@ -54,8 +58,8 @@ while [ "$1" != "" ]; do
 								var_enviroment=()
 								while [ "$1" != "" ]
 								do
-									tempvar=${1^^}
-									case $tempvar in
+									var_temp_arguments=${1^^}
+									case $var_temp_arguments in
 										ALL  )
 											var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNG" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLE" )
 											;;
@@ -116,14 +120,14 @@ while [ "$1" != "" ]; do
                                 ;;
         -T | --typ )         	shift
 								var_typ=()
-								var_step_all=false
+								var_typ_all=false
 								while [ "$1" != "" ]
 								do
-									tempvar=${1^^}
-									case $tempvar in
+									var_temp_arguments=${1^^}
+									case $var_temp_arguments in
 										ALL)
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
-											var_step_all=true
+											var_typ_all=true
 											;;
 										LIVE)
 											var_typ+=( "LIVE")
@@ -153,10 +157,25 @@ while [ "$1" != "" ]; do
 								done
                                 ;;
         -A | --anonymize )      ;;
-		-R | --release )        ;;
+		-R | --release )        shift
+                                var_temp_arguments=${1^^}
+                                case $var_temp_arguments in
+									FULL)
+										var_release_full=true
+										var_release_delta=false
+										;;
+									DELTA)
+										var_release_delta=true
+										var_release_full=false
+										;;
+									* )
+										usage backup
+										exit 1
+								esac
+								;;
         -B | --backup )      	shift
-                                tempvar=${1^^}
-                                case $tempvar in
+                                var_temp_arguments=${1^^}
+                                case $var_temp_arguments in
 									All)
 										;;
 									VOLUMES)
@@ -206,7 +225,7 @@ fi
 
 # create docker volumes !! VOLUMES ONLY FOR LIVE AND DEV SYSTEM !!
 if [ $typ_live ]; then
-	if [ $steps_all | $steps_vol ]; then
+	if [ $var_steps_all | $var_steps_vol ]; then
 		create_docker_volumes LIVE MARIADB
 		create_docker_volumes LIVE MAILHOG
 		create_docker_volumes LIVE PROXY
