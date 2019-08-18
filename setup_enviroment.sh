@@ -310,5 +310,5 @@ if [ $typ_live ]; then
 	fi
 fi
 
-git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2 && ./setup_enviroment.sh -E LIAM2 -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
+git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2_ICO && ./setup_enviroment.sh -E LIAM2_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
 '
