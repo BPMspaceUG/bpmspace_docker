@@ -28,7 +28,7 @@ create_docker_volumes() {
 # default Value
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+var_enviroment=( "BASE" "LIAM2_ico" "LIAM2_CLIENT_ico" "SQMS_ico" "SQMS_CLIENT_ico" "SQMS_EXPORT_ico" "SQMS2_ico" "SQMS2_CLIENT_ico" "COMS_ico" "COMS_CLIENT_ico" "BWNG_mitsm" "WWW_bpmspace" "WWW_ico" "WWW_mitsm" "MOODLE_ico" )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 
@@ -68,52 +68,52 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										ALL  )
-											var_enviroment=(  "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+											var_enviroment=(  "BASE" "LIAM2_ico" "LIAM2_CLIENT_ico" "SQMS_ico" "SQMS_CLIENT_ico" "SQMS_EXPORT_ico" "SQMS2_ico" "SQMS2_CLIENT_ico" "COMS" "COMS_CLIENT" "BWNG_mitsm" "WWW_bpmspace" "WWW_ico" "WWW_mitsm" "MOODLE_ico" )
 											;;
 										BASE   )
 											var_enviroment+=( "BASE" )
 											;;
-										LIAM2  )
-											var_enviroment+=( "LIAM2" )
+										LIAM2_ico  )
+											var_enviroment+=( "LIAM2_ico" )
 											;;
-										LIAM2_CLIENT  )
-											var_enviroment+=( "LIAM2_CLIENT" )
+										LIAM2_CLIENT_ico  )
+											var_enviroment+=( "LIAM2_CLIENT_ico" )
 											;;
-										SQMS  )
-											var_enviroment+=( "SQMS" )
+										SQMS_ico  )
+											var_enviroment+=( "SQMS_ico" )
 											;;
-										SQMS_CLIENT  )
-											var_enviroment+=( "SQMS_CLIENT" )
+										SQMS_CLIENT_ico  )
+											var_enviroment+=( "SQMS_CLIENT_ico" )
 											;;
-										SQMS_EXPORT  )
-											var_enviroment+=( "SQMS_EXPORT" )
+										SQMS_EXPORT_ico  )
+											var_enviroment+=( "SQMS_EXPORT_ico" )
 											;;
-										SQMS2  )
-											var_enviroment+=( "SQMS2" )
+										SQMS2_ico  )
+											var_enviroment+=( "SQMS2_ico" )
 											;;
-										SQMS2_CLIENT  )
-											var_enviroment+=( "SQMS2_CLIENT" )
+										SQMS2_CLIENT_ico  )
+											var_enviroment+=( "SQMS2_CLIENT_ico" )
 											;;
-										COMS )
-											var_enviroment+=( "COMS" )
+										COMS_ico )
+											var_enviroment+=( "COMS_ico" )
 											;;
-										COMS_CLIENT )
-											var_enviroment+=( "COMS_CLIENT" )
+										COMS_CLIENT_ico )
+											var_enviroment+=( "COMS_CLIENT_ico" )
 											;;
-										BWNGmitsm )
-											var_enviroment+=( "BWNGmitsm" )
+										BWNG_mitsm )
+											var_enviroment+=( "BWNG_mitsm" )
 											;;
-										WWWbpmspace )
-											var_enviroment+=( "WWWbpmspace" )
+										WWW_bpmspace )
+											var_enviroment+=( "WWW_bpmspace" )
 											;;
-										WWWico )
-											var_enviroment+=( "WWWico" )
+										WWW_ico )
+											var_enviroment+=( "WWW_ico" )
 											;;
-										WWWmitsm )
-											var_enviroment+=( "WWWmitsm" )
+										WWW_mitsm )
+											var_enviroment+=( "WWW_mitsm" )
 											;;
-										MOODLEico )
-											var_enviroment+=( "MOODLEico" )
+										MOODLE_ico )
+											var_enviroment+=( "MOODLE_ico" )
 											;;
 										* )
 											usage enviroment
@@ -246,32 +246,32 @@ if [ $typ_live ]; then
 		create_docker_volumes LIVE IMGINT
 		create_docker_volumes LIVE IMGEXT
 		#LIAM 2
-		if [ $env_all | $env_liam2 ]; then
-			create_docker_volumes LIVE LIAM2
+		if [ $env_all | $env_LIAM2_ico ]; then
+			create_docker_volumes LIVE LIAM2_ico
 		fi
 		#LIAM 2 CLIENT
-		if [ $env_all | $env_liam2_client ]; then
-			create_docker_volumes LIVE LIAM2-CLIENT
+		if [ $env_all | $env_LIAM2_CLIENT_ico ]; then
+			create_docker_volumes LIVE LIAM2_ico-CLIENT
 		fi
-		#SQMS 1
-		if [ $env_all | $env_sqms ]; then
-			create_docker_volumes LIVE SQMS
+		#SQMS_ico 1
+		if [ $env_all | $env_SQMS_ico ]; then
+			create_docker_volumes LIVE SQMS_ico
 		fi
-		#SQMS 1 CLIENT
-		if [ $env_all | $env_sqms_client ]; then
-			create_docker_volumes LIVE SQMS-CLIENT
+		#SQMS_ico 1 CLIENT
+		if [ $env_all | $env_SQMS_CLIENT_ico ]; then
+			create_docker_volumes LIVE SQMS_ico-CLIENT
 		fi
-		#SQMS 1 EXPORT
-		if [ $env_all | $env_sqms_export ]; then
-			create_docker_volumes LIVE SQMS-EXPORT
+		#SQMS_ico 1 EXPORT
+		if [ $env_all | $env_SQMS_EXPORT_ico ]; then
+			create_docker_volumes LIVE SQMS_ico-EXPORT
 		fi
-		#SQMS 2
-		if [ $env_all | $env_sqms2 ]; then
-			create_docker_volumes LIVE SQMS2
+		#SQMS_ico 2
+		if [ $env_all | $env_SQMS2_ico ]; then
+			create_docker_volumes LIVE SQMS2_ico
 		fi
-		#SQMS 2 CLIENT
-		if [ $env_all | $env_sqms2_client ]; then
-			create_docker_volumes LIVE SQMS2-CLIENT
+		#SQMS_ico 2 CLIENT
+		if [ $env_all | $env_SQMS2_CLIENT_ico ]; then
+			create_docker_volumes LIVE SQMS2_ico-CLIENT
 		fi
 		#COMS 1
 		if [ $env_all | $env_coms ]; then
@@ -290,20 +290,20 @@ if [ $typ_live ]; then
 			create_docker_volumes LIVE COMS2-CLIENT
 		fi
 		
-		#BWNGmitsm CLIENT
-		if [ $env_all | $env_BWNGmitsm ]; then
-			create_docker_volumes LIVE BWNGmitsm
+		#BWNG_mitsm CLIENT
+		if [ $env_all | $env_BWNG_mitsm ]; then
+			create_docker_volumes LIVE BWNG_mitsm
 		fi
 		
-		#WWWbpmspace
+		#WWW_bpmspace
 		if [ $env_all | $env_www_bpm ]; then
-			create_docker_volumes LIVE BWNGmitsm-WWW
+			create_docker_volumes LIVE BWNG_mitsm-WWW
 		fi
-		#WWWico
+		#WWW_ico
 		if [ $env_all | $env_www_ico ]; then
 			create_docker_volumes LIVE ICO-WWW
 		fi
-		#WWWmitsm
+		#WWW_mitsm
 		if [ $env_all | $env_www_mitsm ]; then
 			create_docker_volumes LIVE MITSM-WWWM
 		fi
