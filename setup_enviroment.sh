@@ -73,7 +73,7 @@ while [ "$1" != "" ]; do
 										BASE   )
 											var_enviroment+=( "BASE" )
 											;;
-										LIAM2  )
+										"LIAM2"  )
 											var_enviroment+=( "LIAM2" )
 											;;
 										LIAM2_CLIENT  )
