@@ -67,52 +67,52 @@ while [ "$1" != "" ]; do
 								do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
-										ALL  )
+										"ALL"  )
 											var_enviroment=(  "BASE" "LIAM2" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 											;;
-										BASE   )
+										"BASE"   )
 											var_enviroment+=( "BASE" )
 											;;
 										"LIAM2"  )
 											var_enviroment+=( "LIAM2" )
 											;;
-										LIAM2_CLIENT  )
+										"LIAM2_CLIENT"  )
 											var_enviroment+=( "LIAM2_CLIENT" )
 											;;
-										SQMS  )
+										"SQMS"  )
 											var_enviroment+=( "SQMS" )
 											;;
-										SQMS_CLIENT  )
+										"SQMS_CLIENT"  )
 											var_enviroment+=( "SQMS_CLIENT" )
 											;;
-										SQMS_EXPORT  )
+										"SQMS_EXPORT"  )
 											var_enviroment+=( "SQMS_EXPORT" )
 											;;
-										SQMS2  )
+										"SQMS2"  )
 											var_enviroment+=( "SQMS2" )
 											;;
-										SQMS2_CLIENT  )
+										"SQMS2_CLIENT"  )
 											var_enviroment+=( "SQMS2_CLIENT" )
 											;;
-										COMS )
+										"COMS" )
 											var_enviroment+=( "COMS" )
 											;;
-										COMS_CLIENT )
+										"COMS_CLIENT" )
 											var_enviroment+=( "COMS_CLIENT" )
 											;;
-										BWNGmitsm )
+										"BWNGmitsm" )
 											var_enviroment+=( "BWNGmitsm" )
 											;;
-										WWWbpmspace )
+										"WWWbpmspace" )
 											var_enviroment+=( "WWWbpmspace" )
 											;;
-										WWWico )
+										"WWWico" )
 											var_enviroment+=( "WWWico" )
 											;;
-										WWWmitsm )
+										"WWWmitsm" )
 											var_enviroment+=( "WWWmitsm" )
 											;;
-										MOODLEico )
+										"MOODLEico" )
 											var_enviroment+=( "MOODLEico" )
 											;;
 										* )
@@ -132,24 +132,24 @@ while [ "$1" != "" ]; do
 								do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
-										ALL)
+										"ALL")
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 											var_typ_all=true
 											;;
-										LIVE)
+										"LIVE")
 											var_typ+=( "LIVE")
 											var_step_live=true
 											;;
-										REF)
+										"REF")
 											var_typ+=( "REF" )
 											;;
-										STAGE)
+										"STAGE")
 											var_typ+=( "STAGE" )
 											;;
-										TEST)
+										"TEST")
 											var_typ+=( "TEST" )
 											;;
-										DEV)
+										"DEV")
 											var_typ+=( "DEV" )
 											var_step_dev=true
 											;;
@@ -167,11 +167,11 @@ while [ "$1" != "" ]; do
 		-R | --release )        shift
                                 var_temp_arguments=${1^^}
                                 case $var_temp_arguments in
-									FULL)
+									"FULL")
 										var_release_full=true
 										var_release_delta=false
 										;;
-									DELTA)
+									"DELTA")
 										var_release_delta=true
 										var_release_full=false
 										;;
@@ -183,13 +183,13 @@ while [ "$1" != "" ]; do
         -B | --backup )      	shift
                                 var_temp_arguments=${1^^}
                                 case $var_temp_arguments in
-									All)
+									"All")
 										;;
-									VOLUMES)
+									"VOLUMES")
 										;;
-									SQL)
+									"SQL")
 										;;
-									IMAGES)
+									"IMAGES")
 										;;
 									* )
 										usage backup
