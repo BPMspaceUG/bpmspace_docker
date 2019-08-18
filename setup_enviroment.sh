@@ -28,7 +28,7 @@ create_docker_volumes() {
 # default Value
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2_ico" "LIAM2_CLIENT_ico" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 
@@ -68,16 +68,16 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										"ALL"  )
-											var_enviroment=(  "BASE" "LIAM2_ico" "LIAM2_CLIENT_ico" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
+											var_enviroment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT" "SQMS" "SQMS_CLIENT" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_CLIENT" "BWNGmitsm" "WWWbpmspace" "WWWico" "WWWmitsm" "MOODLEico" )
 											;;
 										"BASE"   )
 											var_enviroment+=( "BASE" )
 											;;
-										"LIAM2_ico"  )
-											var_enviroment+=( "LIAM2_ico" )
+										"LIAM2_ICO"  )
+											var_enviroment+=( "LIAM2_ICO" )
 											;;
-										"LIAM2_CLIENT_ico"  )
-											var_enviroment+=( "LIAM2_CLIENT_ico" )
+										"LIAM2_CLIENT"  )
+											var_enviroment+=( "LIAM2_CLIENT" )
 											;;
 										"SQMS"  )
 											var_enviroment+=( "SQMS" )
@@ -310,5 +310,5 @@ if [ $typ_live ]; then
 	fi
 fi
 
-git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2_ico && ./setup_enviroment.sh -E LIAM2 -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
+git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2 && ./setup_enviroment.sh -E LIAM2 -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE && ./setup_enviroment.sh -E LIAM2 SQMS -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
 '
