@@ -1,4 +1,7 @@
-version: "2"
+version: '2'
 services:
-    base:          
-       image: hello-world
+ helloworld:
+ image: hello-world
+ ports:
+ - "5000:5000"         
+
