@@ -1,5 +1,6 @@
-FROM php:7.3.5-apache-stretch
+FROM atmoz/sftp
 RUN apt-get update
+RUN apt-get install -y git
 RUN apt-get install -y wget
 RUN apt-get install -y nano
 
