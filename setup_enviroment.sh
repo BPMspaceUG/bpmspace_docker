@@ -3,12 +3,12 @@ var_script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
 
 
-test_docker_compose_yml="
+test_docker_compose_yml='
 version: "3"
 services:
   base:
     image: hello-world
-"
+'
 if [ $# -gt 0 ]; then
     echo "Your command line contains $# arguments"
 else
