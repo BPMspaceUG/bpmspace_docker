@@ -25,12 +25,17 @@ create_docker_volumes() {
 	docker volume create --name $1-$2-backup
 }
 
-# default Value
+# default Values
+var_base="bpmspace.local"
+var_http_port=10080
+var_https_port=10044
 var_steps_all=true
 var_typ_all=true
-var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
+#var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
+var_enviroment=( "BASE" "LIAM2_ICO"  )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
+var_release_delta=false
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -205,16 +210,31 @@ while [ "$1" != "" ]; do
     shift
 done
 
+var_http_port=10080
 
 for var_typ_j in "${var_typ[@]}"
 do
 	for var_enviroment_i in "${var_enviroment[@]}"
 	do
-		echo $var_typ_j"_"$var_enviroment_i
+		export var_enviroment_i
+		export var_typ_j
+		export var_http_port
+		export var_server_name=$var_typ_j"_"$var_enviroment_i"."$var_base
+		export var_project_name="project_"$var_server_name
+		echo $var_server_name
 		mkdir -p -- $var_script_path/$var_enviroment_i
-		touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
-		echo "$test_docker_compose_yml" > "$var_script_path/$var_enviroment_i/docker-compose.yml"
+		#touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
+		rm $var_script_path/$var_enviroment_i/docker-compose.yml
+		#touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
+		cp "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_enviroment_i/docker-compose.yml"
 		touch -a $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
+		docker-compose \
+						--project-name=$var_project_name\
+						-f $var_script_path/$var_enviroment_i/docker-compose.yml \
+		               up -d 
+		               #-f $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
+		var_http_port=$((var_http_port+100))
+		
 	done
 done 
 
@@ -311,4 +331,7 @@ if [ $typ_live ]; then
 fi
 
 git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2_ICO && ./setup_enviroment.sh -E LIAM2_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
+
+docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_jwilder_nginx-proxy/docker-compose.yml up -d
+
 '

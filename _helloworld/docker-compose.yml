@@ -1,7 +1,15 @@
 version: '2'
 services:
  helloworld:
- image: hello-world
- ports:
- - "5000:5000"         
-
+  hostname: ${var_server_name}
+  container_name: ${var_server_name}
+  image: jwilder/whoami
+  environment:  
+    - VIRTUAL_HOST=${var_server_name}
+    - VIRTUAL_PORT=${var_http_port}"
+    - NODE_ENV=${var_enviroment_i}
+    
+networks:
+  default:
+    external:
+      name: nginx-proxy
