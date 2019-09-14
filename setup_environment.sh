@@ -9,6 +9,7 @@ services:
   base:
     image: hello-world
 '
+
 if [ $# -gt 0 ]; then
     echo "Your command line contains $# arguments"
 else
@@ -31,8 +32,8 @@ var_http_port=10080
 var_https_port=10044
 var_steps_all=true
 var_typ_all=true
-#var_enviroment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
-var_enviroment=( "BASE" "LIAM2_ICO"  )
+#var_environment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
+var_environment=( "BASE" "LIAM2_ICO"  )
 var_typ=( "TEST" "DEV" )
 var_release_full=true
 var_release_delta=false
@@ -66,62 +67,62 @@ while [ "$1" != "" ]; do
 										exit 1
 								esac
                                 ;;
-        -E | --enviroment )     shift
-								var_enviroment=()
+        -E | --environment )     shift
+								var_environment=()
 								while [ "$1" != "" ]
 								do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										"ALL"  )
-											var_enviroment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
+											var_environment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
 											;;
 										"BASE"   )
-											var_enviroment+=( "BASE" )
+											var_environment+=( "BASE" )
 											;;
 										"LIAM2_ICO"  )
-											var_enviroment+=( "LIAM2_ICO" )
+											var_environment+=( "LIAM2_ICO" )
 											;;
 										"LIAM2_CLIENT_ICO"  )
-											var_enviroment+=( "LIAM2_CLIENT_ICO" )
+											var_environment+=( "LIAM2_CLIENT_ICO" )
 											;;
 										"SQMS_ICO"  )
-											var_enviroment+=( "SQMS_ICO" )
+											var_environment+=( "SQMS_ICO" )
 											;;
 										"SQMS_CLIENT_ICO"  )
-											var_enviroment+=( "SQMS_CLIENT_ICO" )
+											var_environment+=( "SQMS_CLIENT_ICO" )
 											;;
 										"SQMS_EXPORT"  )
-											var_enviroment+=( "SQMS_EXPORT" )
+											var_environment+=( "SQMS_EXPORT" )
 											;;
 										"SQMS2"  )
-											var_enviroment+=( "SQMS2" )
+											var_environment+=( "SQMS2" )
 											;;
 										"SQMS2_CLIENT"  )
-											var_enviroment+=( "SQMS2_CLIENT" )
+											var_environment+=( "SQMS2_CLIENT" )
 											;;
 										"COMS_ICO" )
-											var_enviroment+=( "COMS_ICO" )
+											var_environment+=( "COMS_ICO" )
 											;;
 										"COMS_CLIENT_ICO" )
-											var_enviroment+=( "COMS_CLIENT_ICO" )
+											var_environment+=( "COMS_CLIENT_ICO" )
 											;;
 										"BWNG_MITSM" )
-											var_enviroment+=( "BWNG_MITSM" )
+											var_environment+=( "BWNG_MITSM" )
 											;;
 										"WWW_BPMSPACE" )
-											var_enviroment+=( "WWW_BPMSPACE" )
+											var_environment+=( "WWW_BPMSPACE" )
 											;;
 										"WWW_ICO" )
-											var_enviroment+=( "WWW_ICO" )
+											var_environment+=( "WWW_ICO" )
 											;;
 										"WWW_MITSM" )
-											var_enviroment+=( "WWW_MITSM" )
+											var_environment+=( "WWW_MITSM" )
 											;;
 										"MOODLE_ICO" )
-											var_enviroment+=( "MOODLE_ICO" )
+											var_environment+=( "MOODLE_ICO" )
 											;;
 										* )
-											usage enviroment
+											usage environment
 											exit 1
 									esac
 									if [[ $2 == "-"* ]] || [[ $2 == "" ]]; then
@@ -214,25 +215,25 @@ var_http_port=10080
 
 for var_typ_j in "${var_typ[@]}"
 do
-	for var_enviroment_i in "${var_enviroment[@]}"
+	for var_environment_i in "${var_environment[@]}"
 	do
-		export var_enviroment_i
+		export var_environment_i
 		export var_typ_j
 		export var_http_port
-		export var_server_name=$var_typ_j"_"$var_enviroment_i"."$var_base
+		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
 		echo $var_server_name
-		mkdir -p -- $var_script_path/$var_enviroment_i
-		#touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
-		rm $var_script_path/$var_enviroment_i/docker-compose.yml
-		#touch -a $var_script_path/$var_enviroment_i/docker-compose.yml
-		cp "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_enviroment_i/docker-compose.yml"
-		touch -a $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
+		mkdir -p -- $var_script_path/$var_environment_i
+		#touch -a $var_script_path/$var_environment_i/docker-compose.yml
+		rm $var_script_path/$var_environment_i/docker-compose.yml
+		#touch -a $var_script_path/$var_environment_i/docker-compose.yml
+		cp "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
+		#touch -a $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
 		docker-compose \
 						--project-name=$var_project_name\
-						-f $var_script_path/$var_enviroment_i/docker-compose.yml \
+						-f $var_script_path/$var_environment_i/docker-compose.yml \
 		               up -d 
-		               #-f $var_script_path/$var_enviroment_i/docker-compose.$var_typ_j.yml
+		               #-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
 		var_http_port=$((var_http_port+100))
 		
 	done
@@ -330,7 +331,7 @@ if [ $typ_live ]; then
 	fi
 fi
 
-git fetch --all && git reset --hard origin/master && chmod 700 setup_enviroment.sh  && ./setup_enviroment.sh && ./setup_enviroment.sh -E LIAM2_ICO && ./setup_enviroment.sh -E LIAM2_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_enviroment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_enviroment.sh -E ALL -T ALL
+git fetch --all && git reset --hard origin/master && chmod 700 setup_environment.sh  && ./setup_environment.sh && ./setup_environment.sh -E LIAM2_ICO && ./setup_environment.sh -E LIAM2_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_environment.sh -E ALL -T ALL
 
 docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_jwilder_nginx-proxy/docker-compose.yml up -d
 
