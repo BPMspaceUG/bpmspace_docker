@@ -1,25 +1,14 @@
 version: '2'
-
 services:
   nginx-proxy:
+    hostname: nginx-proxy
+    container_name: nginx-proxy
     image: jwilder/nginx-proxy
     ports:
-      - "8088:80"
+        - "${var_http_proxport}:80"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  whoami:
-    image: jwilder/whoami
-    environment:
-      - VIRTUAL_HOST=whoami.bpmspace.local
-
-  whoami2:
-    image: nginxdemos/hello
-    environment:
-      - VIRTUAL_HOST=whoami2.bpmspace.local
-      - VIRTUAL_PORT=7777
-      
+        - /var/run/docker.sock:/tmp/docker.sock:ro
 networks:
-  default:
-    external:
-      name: nginx-proxy
+    default:
+      external:
+        name: nginx-proxy

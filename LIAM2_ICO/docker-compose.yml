@@ -7,7 +7,7 @@ services:
   environment:  
     - VIRTUAL_HOST=${var_server_name}
     - VIRTUAL_PORT=${var_http_port}"
-    - NODE_ENV=${var_enviroment_i}
+    - NODE_ENV=${var_environment_i}
     
 networks:
   default:

@@ -26,17 +26,24 @@ create_docker_volumes() {
 	docker volume create --name $1-$2-backup
 }
 
+create_docker_network() {
+	docker network create nginx-proxy
+}
+
 # default Values
-var_base="bpmspace.local"
-var_http_port=10080
-var_https_port=10044
-var_steps_all=true
-var_typ_all=true
+# nslookup to soemthing.vcap.me returns 127.0.0.1 
+export var_base="vcap.me"
+export var_http_proxport="8088"
+export var_https_proxport="8044"
+export var_http_port=10080
+export var_https_port=10044
+export var_steps_all=true
+export var_typ_all=true
 #var_environment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
-var_environment=( "BASE" "LIAM2_ICO"  )
-var_typ=( "TEST" "DEV" )
-var_release_full=true
-var_release_delta=false
+export var_environment=( "BASE" "LIAM2_ICO"  )
+export var_typ=( "TEST" "DEV" )
+export var_release_full=true
+export var_release_delta=false
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -212,6 +219,8 @@ while [ "$1" != "" ]; do
 done
 
 var_http_port=10080
+create_docker_network
+docker-compose -f $var_script_path/_jwilder_nginx-proxy/docker-compose.yml up -d
 
 for var_typ_j in "${var_typ[@]}"
 do
