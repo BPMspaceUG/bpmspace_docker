@@ -2,13 +2,8 @@
 var_script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
 
-
-test_docker_compose_yml='
-version: "3"
-services:
-  base:
-    image: hello-world
-'
+# get (secret) parameters
+source $var_script_path/setup_environment.secret.conf
 
 if [ $# -gt 0 ]; then
     echo "Your command line contains $# arguments"
@@ -231,18 +226,15 @@ do
 		export var_http_port
 		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
-		echo $var_server_name
+		echo "http://"$var_server_name":"$var_http_proxport
 		mkdir -p -- $var_script_path/$var_environment_i
-		#touch -a $var_script_path/$var_environment_i/docker-compose.yml
-		rm $var_script_path/$var_environment_i/docker-compose.yml
-		#touch -a $var_script_path/$var_environment_i/docker-compose.yml
-		cp "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
-		#touch -a $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
+		cp -n "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
+		cp "$var_script_path/_helloworld/docker-compose.min.yml" $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
 		docker-compose \
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
-		               up -d 
-		               #-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
+						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
+						up -d 
 		var_http_port=$((var_http_port+100))
 		
 	done
