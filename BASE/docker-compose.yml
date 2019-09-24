@@ -1,14 +1,31 @@
 version: '2'
 services:
- helloworld:
-  hostname: ${var_server_name}
-  container_name: ${var_server_name}
-  image: jwilder/whoami
-  environment:  
-    - VIRTUAL_HOST=${var_server_name}
-    - VIRTUAL_PORT=${var_http_port}"
-    - NODE_ENV=${var_environment_i}
-    
+    mariadb:
+        image: mariadb:10.1
+        restart: always
+        hostname: MARIADB-Server
+        container_name: MARIADB-Server
+        ports:
+            - ${var_sql_port}:3306
+        environment:
+            TZ: "Europe/Rome"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "DORFDEPP"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        hostname: phpmyadmin
+        container_name: phpmyadmin
+      
+    mailhog:
+        image: mailhog/mailhog
+        hostname: MAIL-Server
+        container_name: MAIL-Server
+        restart: always
+        ports:
+            - 1025:1025
+            - 8025:8025
 networks:
   default:
     external:

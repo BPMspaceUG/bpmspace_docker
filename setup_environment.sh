@@ -23,6 +23,7 @@ create_docker_volumes() {
 
 create_docker_network() {
 	docker network create nginx-proxy
+	docker network create base
 }
 
 # default Values
@@ -39,6 +40,8 @@ export var_environment=( "BASE" "LIAM2_ICO"  )
 export var_typ=( "TEST" "DEV" )
 export var_release_full=true
 export var_release_delta=false
+export var_sql_port=3306
+
 
 while [ "$1" != "" ]; do
     case $1 in
