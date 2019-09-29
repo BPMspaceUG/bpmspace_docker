@@ -1,14 +1,14 @@
 version: '2'
 services:
-  nginx-proxy:
-    hostname: nginx-proxy
-    container_name: nginx-proxy
+  nginx-proxy-live:
+    hostname: nginx-proxy-live
+    container_name: nginx-proxy-live
     image: jwilder/nginx-proxy
     ports:
-        - "${var_http_proxport}:80"
+        - "${var_http_proxyport_live}:80"
     volumes:
         - /var/run/docker.sock:/tmp/docker.sock:ro
 networks:
     default:
       external:
-        name: nginx-proxy
+        name: nginx-proxy-live

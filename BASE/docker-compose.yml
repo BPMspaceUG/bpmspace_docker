@@ -3,8 +3,8 @@ services:
     mariadb:
         image: mariadb:10.1
         restart: always
-        hostname: MARIADB-Server
-        container_name: MARIADB-Server
+        hostname: db-${var_server_name}
+        container_name: db-${var_server_name}
         ports:
             - ${var_sql_port}:3306
         environment:
@@ -15,17 +15,21 @@ services:
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         restart: always
-        hostname: phpmyadmin
-        container_name: phpmyadmin
+        hostname: phpmyadmin-${var_server_name}
+        container_name: phpmyadmin-${var_server_name}
+        environment:  
+          - VIRTUAL_HOST=phpmyadmin-${var_server_name}
       
     mailhog:
         image: mailhog/mailhog
-        hostname: MAIL-Server
-        container_name: MAIL-Server
+        hostname: mail-${var_server_name}
+        container_name: mail-${var_server_name}
         restart: always
+        environment:  
+          - VIRTUAL_HOST=mail-${var_server_name}
         ports:
-            - 1025:1025
-            - 8025:8025
+            - ${var_smtp_port}:1025
+
 networks:
   default:
     external:

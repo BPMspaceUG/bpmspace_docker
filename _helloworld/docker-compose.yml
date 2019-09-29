@@ -6,7 +6,7 @@ services:
   image: jwilder/whoami
   environment:  
     - VIRTUAL_HOST=${var_server_name}
-    - VIRTUAL_PORT=${var_http_port}"
+    - VIRTUAL_PORT=${var_http_port}
     - NODE_ENV=${var_environment_i}
     
 networks:

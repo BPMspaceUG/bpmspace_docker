@@ -23,16 +23,14 @@ create_docker_volumes() {
 
 create_docker_network() {
 	docker network create nginx-proxy
+	docker network create nginx-proxy-notlive
+	docker network create nginx-proxy-live
 	docker network create base
 }
 
 # default Values
 # nslookup to soemthing.vcap.me returns 127.0.0.1 
 export var_base="vcap.me"
-export var_http_proxport="8088"
-export var_https_proxport="8044"
-export var_http_port=10080
-export var_https_port=10044
 export var_steps_all=true
 export var_typ_all=true
 #var_environment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
@@ -40,8 +38,22 @@ export var_environment=( "BASE" "LIAM2_ICO"  )
 export var_typ=( "TEST" "DEV" )
 export var_release_full=true
 export var_release_delta=false
-export var_sql_port=3306
 
+export var_http_proxyport_live=8087
+export var_https_proxyport_live=8043
+export var_http_proxyport_notlive=8088
+export var_https_proxyport_notlive=8044
+
+export var_sql_port_default=3306
+export var_sql_port=$var_sql_port_default
+export var_smtp_port_default=8025
+export var_smtp_port=$var_smtp_port_default
+
+export var_http_port=10080
+export var_https_port=10443
+
+export var_reverseproxy_live=true
+export var_reverseproxy_notlive=true
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -146,22 +158,29 @@ while [ "$1" != "" ]; do
 										"ALL")
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 											var_typ_all=true
+											var_reverseproxy_live=true
+											var_reverseproxy_notlive=true
 											;;
 										"LIVE")
 											var_typ+=( "LIVE")
 											var_step_live=true
+											var_reverseproxy_live=true
 											;;
 										"REF")
 											var_typ+=( "REF" )
+											var_reverseproxy_notlive=true
 											;;
 										"STAGE")
 											var_typ+=( "STAGE" )
+											var_reverseproxy_notlive=true
 											;;
 										"TEST")
 											var_typ+=( "TEST" )
+											var_reverseproxy_notlive=true
 											;;
 										"DEV")
 											var_typ+=( "DEV" )
+											var_reverseproxy_notlive=true
 											var_step_dev=true
 											;;
 										* )
@@ -216,29 +235,47 @@ while [ "$1" != "" ]; do
     shift
 done
 
-var_http_port=10080
+# Create Network
 create_docker_network
-docker-compose -f $var_script_path/_jwilder_nginx-proxy/docker-compose.yml up -d
+
+
+# Create Reverse Proxy for live and/or NOT live (all other typs then LIVE)
+	if [[ $var_reverseproxy_notlive = "true" ]]; then
+	  echo
+	  docker-compose -p LIVE -f $var_script_path/_jwilder_nginx-proxy/LIVE/docker-compose.yml up -d 
+	fi
+	if [[ $var_reverseproxy_live = "true" ]]; then
+	  docker-compose -p NOTLIVE -f $var_script_path/_jwilder_nginx-proxy/NOTLIVE/docker-compose.yml up -d
+	fi
+
+
+
 
 for var_typ_j in "${var_typ[@]}"
 do
+	export var_typ_j
+	
+	exit 
+	
 	for var_environment_i in "${var_environment[@]}"
 	do
 		export var_environment_i
-		export var_typ_j
 		export var_http_port
 		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
-		echo "http://"$var_server_name":"$var_http_proxport
+		echo "http://"$var_server_name":"$var_http_proxyport_notlive
+		echo "http://"$var_server_name":"$var_http_proxyport_live
 		mkdir -p -- $var_script_path/$var_environment_i
 		cp -n "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
-		cp "$var_script_path/_helloworld/docker-compose.min.yml" $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
+		cp -n "$var_script_path/_helloworld/docker-compose.min.yml" $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
 		docker-compose \
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
-						up -d 
-		var_http_port=$((var_http_port+100))
+						up -d --remove-orphans
+		export var_http_port=$((var_http_port+30))
+		export var_sql_port=$((var_sql_port+1))
+		export var_smtp_port=$((var_smtp_port+1))
 		
 	done
 done 
@@ -338,5 +375,7 @@ fi
 git fetch --all && git reset --hard origin/master && chmod 700 setup_environment.sh  && ./setup_environment.sh && ./setup_environment.sh -E LIAM2_ICO && ./setup_environment.sh -E LIAM2_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_environment.sh -E ALL -T ALL
 
 docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_jwilder_nginx-proxy/docker-compose.yml up -d
+
+docker network -f prune 
 
 '
