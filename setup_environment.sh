@@ -52,8 +52,6 @@ export var_smtp_port=$var_smtp_port_default
 export var_http_port=10080
 export var_https_port=10443
 
-export var_reverseproxy_live=true
-export var_reverseproxy_notlive=true
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -158,29 +156,22 @@ while [ "$1" != "" ]; do
 										"ALL")
 											var_typ=( "LIVE" "REF" "STAGE" "TEST" "DEV" )
 											var_typ_all=true
-											var_reverseproxy_live=true
-											var_reverseproxy_notlive=true
 											;;
 										"LIVE")
 											var_typ+=( "LIVE")
 											var_step_live=true
-											var_reverseproxy_live=true
 											;;
 										"REF")
 											var_typ+=( "REF" )
-											var_reverseproxy_notlive=true
 											;;
 										"STAGE")
 											var_typ+=( "STAGE" )
-											var_reverseproxy_notlive=true
 											;;
 										"TEST")
 											var_typ+=( "TEST" )
-											var_reverseproxy_notlive=true
 											;;
 										"DEV")
 											var_typ+=( "DEV" )
-											var_reverseproxy_notlive=true
 											var_step_dev=true
 											;;
 										* )
@@ -238,7 +229,7 @@ done
 # Create Network
 create_docker_network
 
-
+: '
 # Create Reverse Proxy for live and/or NOT live (all other typs then LIVE)
 	if [[ $var_reverseproxy_notlive = "true" ]]; then
 	  echo
@@ -247,15 +238,23 @@ create_docker_network
 	if [[ $var_reverseproxy_live = "true" ]]; then
 	  docker-compose -p NOTLIVE -f $var_script_path/_jwilder_nginx-proxy/NOTLIVE/docker-compose.yml up -d
 	fi
-
-
-
-
+' 
+echo "setup Type" ${var_typ[@]} 
 for var_typ_j in "${var_typ[@]}"
 do
 	export var_typ_j
-	
-	exit 
+	echo "Starting with type" $var_typ_j
+	# Create Reverse Proxy for live and/or NOT live (all other typs then LIVE)
+	if [[ $var_typ_j = "LIVE" ]]; then
+	  docker-compose -p LIVE -f $var_script_path/_jwilder_nginx-proxy/LIVE/docker-compose.yml up -d 
+	fi
+	if 	[[ $var_typ_j = "REF"  	]] ||\
+		[[ $var_typ_j = "STAGE" ]] ||\
+		[[ $var_typ_j = "TEST"  ]] ||\
+		[[ $var_typ_j = "DEV"  	]];\
+		then
+	  docker-compose -p NOTLIVE -f $var_script_path/_jwilder_nginx-proxy/NOTLIVE/docker-compose.yml up -d
+	fi
 	
 	for var_environment_i in "${var_environment[@]}"
 	do
