@@ -23,8 +23,6 @@ create_docker_volumes() {
 
 create_docker_network() {
 	docker network create nginx-proxy
-	docker network create nginx-proxy-notlive
-	docker network create nginx-proxy-live
 	docker network create base
 }
 
@@ -46,8 +44,10 @@ export var_https_proxyport_notlive=8044
 
 export var_sql_port_default=3306
 export var_sql_port=$var_sql_port_default
-export var_smtp_port_default=8025
+export var_smtp_port_default=1025
 export var_smtp_port=$var_smtp_port_default
+export var_httpmail_port_default=8025
+export var_httpmail_port=$var_httpmail_port_default
 
 export var_http_port=10080
 export var_https_port=10443
@@ -227,33 +227,33 @@ while [ "$1" != "" ]; do
 done
 
 # Create Network
-create_docker_network
+# create_docker_network
 
-: '
-# Create Reverse Proxy for live and/or NOT live (all other typs then LIVE)
-	if [[ $var_reverseproxy_notlive = "true" ]]; then
-	  echo
-	  docker-compose -p LIVE -f $var_script_path/_jwilder_nginx-proxy/LIVE/docker-compose.yml up -d 
-	fi
-	if [[ $var_reverseproxy_live = "true" ]]; then
-	  docker-compose -p NOTLIVE -f $var_script_path/_jwilder_nginx-proxy/NOTLIVE/docker-compose.yml up -d
-	fi
-' 
 echo "setup Type" ${var_typ[@]} 
 for var_typ_j in "${var_typ[@]}"
 do
 	export var_typ_j
 	echo "Starting with type" $var_typ_j
-	# Create Reverse Proxy for live and/or NOT live (all other typs then LIVE)
+	# Create Reverse Proxy & Prox Network for live and/or NOT live (all other typs then LIVE)
 	if [[ $var_typ_j = "LIVE" ]]; then
-	  docker-compose -p LIVE -f $var_script_path/_jwilder_nginx-proxy/LIVE/docker-compose.yml up -d 
+		export var_live="true"
+		export var_network_suffix="live"
+		docker network create nginx-proxy-live
+		docker-compose -p LIVE -f $var_script_path/_nginx-proxy-surrounding/LIVE/docker-compose.yml up -d
+		docker cp $var_script_path/_nginx-proxy-surrounding/index.html surrounding-live.vcap.me:/usr/share/nginx/html/index.html 
+		docker exec -it surrounding-live.vcap.me sed -i "s/PLACEHOLDER HEADER/Environment Type LIVE/g" /usr/share/nginx/html/index.html
 	fi
 	if 	[[ $var_typ_j = "REF"  	]] ||\
 		[[ $var_typ_j = "STAGE" ]] ||\
 		[[ $var_typ_j = "TEST"  ]] ||\
 		[[ $var_typ_j = "DEV"  	]];\
 		then
-	  docker-compose -p NOTLIVE -f $var_script_path/_jwilder_nginx-proxy/NOTLIVE/docker-compose.yml up -d
+		export var_live="false"
+		export var_network_suffix="notlive"
+		docker network create nginx-proxy-notlive
+		docker-compose -p NOTLIVE -f $var_script_path/_nginx-proxy-surrounding/NOTLIVE/docker-compose.yml up -d
+		docker cp $var_script_path/_nginx-proxy-surrounding/index.html surrounding-notlive.vcap.me:/usr/share/nginx/html/index.html 
+		docker exec -it surrounding-notlive.vcap.me sed -i "s/PLACEHOLDER HEADER/Environment Type NOT LIVE/g" /usr/share/nginx/html/index.html
 	fi
 	
 	for var_environment_i in "${var_environment[@]}"
@@ -262,22 +262,33 @@ do
 		export var_http_port
 		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
-		echo "http://"$var_server_name":"$var_http_proxyport_notlive
-		echo "http://"$var_server_name":"$var_http_proxyport_live
 		mkdir -p -- $var_script_path/$var_environment_i
-		cp -n "$var_script_path/_helloworld/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
-		cp -n "$var_script_path/_helloworld/docker-compose.min.yml" $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml
+		cp -n  "$var_script_path/_jwilder_whoami/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
+		cp -n "$var_script_path/_jwilder_whoami/docker-compose.min.yml" "$var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml"
 		docker-compose \
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
 						up -d --remove-orphans
+		#dokument in surrounding server
+		if [[ var_live = "false" ]]; then
+			echo "http://"$var_server_name":"$var_http_proxyport_live
+		else 
+			echo "http://"$var_server_name":"$var_http_proxyport_notlive
+		fi
+		#docker exec -it surrounding-notlive sed -i "s/Server:/Server: NOTLIVE/g" /usr/share/nginx/html/index.html
+		#increment ports for new loop
 		export var_http_port=$((var_http_port+30))
 		export var_sql_port=$((var_sql_port+1))
 		export var_smtp_port=$((var_smtp_port+1))
+		export var_httpmail_port=$((var_smtp_port+1))
 		
 	done
 done 
+echo
+echo
+echo
+docker ps | awk '{print $NF}'
 
 : '
 while [ condition ]
@@ -373,7 +384,7 @@ fi
 
 git fetch --all && git reset --hard origin/master && chmod 700 setup_environment.sh  && ./setup_environment.sh && ./setup_environment.sh -E LIAM2_ICO && ./setup_environment.sh -E LIAM2_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_environment.sh -E ALL -T ALL
 
-docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_jwilder_nginx-proxy/docker-compose.yml up -d
+docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_nginx-proxy-surrounding/docker-compose.yml up -d
 
 docker network -f prune 
 
