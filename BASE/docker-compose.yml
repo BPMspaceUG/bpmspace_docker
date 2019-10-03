@@ -1,4 +1,4 @@
-version: '2'
+version: '3.7'
 services:
     mariadb:
         image: mariadb:10.1
@@ -28,6 +28,8 @@ services:
         environment:  
           - VIRTUAL_HOST=mail-${var_server_name}
           - VIRTUAL_PORT=8025
+        healthcheck:
+         test: echo | telnet 127.0.0.1 25
 
 networks:
   default:

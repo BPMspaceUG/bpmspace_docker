@@ -1,4 +1,4 @@
-version: '2'
+version: '3.7'
 services:
   nginx-proxy-notlive:
     hostname: nginx-proxy-notlive.${var_base}

@@ -263,7 +263,7 @@ do
 		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
 		mkdir -p -- $var_script_path/$var_environment_i
-		cp -n  "$var_script_path/_jwilder_whoami/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
+		cp -n "$var_script_path/_jwilder_whoami/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
 		cp -n "$var_script_path/_jwilder_whoami/docker-compose.min.yml" "$var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml"
 		docker-compose \
 						--project-name=$var_project_name\
