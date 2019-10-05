@@ -268,11 +268,11 @@ do
 		cp -n "$var_script_path/_jwilder_whoami/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
 		cp -n "$var_script_path/_jwilder_whoami/docker-compose.min.yml" "$var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml"
 		
-		cp "$var_script_path/_templates/environment_bevorcomposeup.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.sh"
-		cp "$var_script_path/_templates/environment_bevorcomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
+		cp -n "$var_script_path/_templates/environment_bevorcomposeup.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.sh"
+		cp -n "$var_script_path/_templates/environment_bevorcomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
 		
-		cp "$var_script_path/_templates/environment_aftercomposeup.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
-		cp "$var_script_path/_templates/environment_aftercomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+		cp -n "$var_script_path/_templates/environment_aftercomposeup.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
+		cp -n "$var_script_path/_templates/environment_aftercomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
 		#sudo chmod +x "$var_script_path/$var_environment_i/*.sh"
 		
 		# execute individuall script bevor docker start
