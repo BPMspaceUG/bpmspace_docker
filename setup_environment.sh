@@ -42,7 +42,7 @@ export var_https_proxyport_live=8043
 export var_http_proxyport_notlive=8088
 export var_https_proxyport_notlive=8044
 
-export var_sql_port_default=3306
+export var_sql_port_default=33060
 export var_sql_port=$var_sql_port_default
 export var_smtp_port_default=1025
 export var_smtp_port=$var_smtp_port_default
@@ -51,6 +51,8 @@ export var_httpmail_port=$var_httpmail_port_default
 
 export var_http_port=10080
 export var_https_port=10443
+
+export var_db_rootpasswd="dorfdepp"
 
 
 while [ "$1" != "" ]; do
@@ -242,7 +244,7 @@ do
 		export var_live="true"
 		export var_network_suffix="live"
 		docker network create nginx-proxy-live
-		docker-compose -p LIVE -f $var_script_path/_nginx-proxy-surrounding/LIVE/docker-compose.yml up -d --remove-orphans
+		docker-compose -p LIVE -f $var_script_path/_nginx-proxy-surrounding/LIVE/docker-compose.yml up -d --remove-orphans --force-recreate
 	fi
 	if 	[[ $var_typ_j = "REF"  	]] ||\
 		[[ $var_typ_j = "STAGE" ]] ||\
@@ -252,7 +254,7 @@ do
 		export var_live="false"
 		export var_network_suffix="notlive"
 		docker network create nginx-proxy-notlive
-		docker-compose -p NOTLIVE -f $var_script_path/_nginx-proxy-surrounding/NOTLIVE/docker-compose.yml up -d --remove-orphans
+		docker-compose -p NOTLIVE -f $var_script_path/_nginx-proxy-surrounding/NOTLIVE/docker-compose.yml up -d --remove-orphans --force-recreate
 	fi
 	
 	for var_environment_i in "${var_environment[@]}"
@@ -285,7 +287,7 @@ do
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
-						up -d --remove-orphans
+						up -d --remove-orphans --force-recreate
 		# execute individuall script after docker start
 		echo "calling ..... $var_environment_i/environment_aftercomposeup.sh"
 		source "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
@@ -317,7 +319,6 @@ sudo echo $var_index_notlive > $var_temp_dir/NOTLIVE/index.html
 docker cp $var_temp_dir/LIVE/index.html surrounding-live.vcap.me:/usr/share/nginx/html/index.html 
 docker cp $var_temp_dir/NOTLIVE/index.html surrounding-notlive.vcap.me:/usr/share/nginx/html/index.html 
 
-echo
 #docker ps | awk '{print $NF}'
 
 : '

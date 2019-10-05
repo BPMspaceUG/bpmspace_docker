@@ -5,12 +5,12 @@ services:
         restart: always
         hostname: db-${var_server_name}
         container_name: db-${var_server_name}
-        expose:
-            - 3306
+        ports:
+            - ${var_sql_port}:3306
         environment:
             TZ: "Europe/Rome"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no" 
-            MYSQL_ROOT_PASSWORD: "DORFDEPP"
+            MYSQL_ROOT_PASSWORD: ${var_db_rootpasswd}
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -19,14 +19,16 @@ services:
         container_name: phpmyadmin-${var_server_name}
         environment:  
           - VIRTUAL_HOST=phpmyadmin-${var_server_name}
-      
+          - PMA_HOST=db-${var_server_name}
+        links:
+            - mariadb
     mailhog:
         image: mailhog/mailhog
-        hostname: mail-${var_server_name}
-        container_name: mail-${var_server_name}
+        hostname: mailhog-${var_server_name}
+        container_name: mailhog-${var_server_name}
         restart: always
         environment:  
-          - VIRTUAL_HOST=mail-${var_server_name}
+          - VIRTUAL_HOST=mailhog-${var_server_name}
           - VIRTUAL_PORT=8025
         healthcheck:
          test: echo | telnet 127.0.0.1 25
