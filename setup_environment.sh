@@ -31,9 +31,9 @@ create_docker_network() {
 export var_base="vcap.me"
 export var_steps_all=true
 export var_typ_all=true
-#var_environment=( "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
+#var_environment=( "BASE" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
 export var_environment=( "BASE" "LIAM2_ICO"  )
-export var_typ=( "TEST" "DEV" )
+export var_typ=( "LIVE" "TEST" "DEV" )
 export var_release_full=true
 export var_release_delta=false
 
@@ -89,7 +89,7 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										"ALL"  )
-											var_environment=(  "BASE" "LIAM2_ICO" "LIAM2_CLIENT_ICO" "SQMS_ICO" "SQMS_CLIENT_ICO" "SQMS_EXPORT" "SQMS2" "SQMS2_CLIENT" "COMS_ICO" "COMS_CLIENT_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
+											var_environment=(  "BASE" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO"  "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
 											;;
 										"BASE"   )
 											var_environment+=( "BASE" )
@@ -97,29 +97,17 @@ while [ "$1" != "" ]; do
 										"LIAM2_ICO"  )
 											var_environment+=( "LIAM2_ICO" )
 											;;
-										"LIAM2_CLIENT_ICO"  )
-											var_environment+=( "LIAM2_CLIENT_ICO" )
-											;;
 										"SQMS_ICO"  )
 											var_environment+=( "SQMS_ICO" )
-											;;
-										"SQMS_CLIENT_ICO"  )
-											var_environment+=( "SQMS_CLIENT_ICO" )
 											;;
 										"SQMS_EXPORT"  )
 											var_environment+=( "SQMS_EXPORT" )
 											;;
-										"SQMS2"  )
-											var_environment+=( "SQMS2" )
-											;;
-										"SQMS2_CLIENT"  )
-											var_environment+=( "SQMS2_CLIENT" )
+										"SQMS2_ICO"  )
+											var_environment+=( "SQMS2_ICO" )
 											;;
 										"COMS_ICO" )
 											var_environment+=( "COMS_ICO" )
-											;;
-										"COMS_CLIENT_ICO" )
-											var_environment+=( "COMS_CLIENT_ICO" )
 											;;
 										"BWNG_MITSM" )
 											var_environment+=( "BWNG_MITSM" )
@@ -226,6 +214,20 @@ while [ "$1" != "" ]; do
     shift
 done
 
+# create TEMP dir 
+# TMP LIVE
+sudo mkdir -p -- $var_temp_dir/LIVE/
+sudo chown -R  $USER:$USER $var_temp_dir/LIVE/
+sudo chmod -R 770 $var_temp_dir/LIVE/
+# TMP NOTLIVE
+sudo mkdir -p -- $var_temp_dir/NOTLIVE/
+sudo chown -R $USER:$USER $var_temp_dir/NOTLIVE/
+sudo chmod -R 770 $var_temp_dir/NOTLIVE/
+
+# Prepare surrounding index.html
+var_index_live=$(<$var_script_path/_templates/index.html)
+var_index_notlive=$(<$var_script_path/_templates/index.html)
+
 # Create Network
 # create_docker_network
 
@@ -233,15 +235,14 @@ echo "setup Type" ${var_typ[@]}
 for var_typ_j in "${var_typ[@]}"
 do
 	export var_typ_j
+	
 	echo "Starting with type" $var_typ_j
 	# Create Reverse Proxy & Prox Network for live and/or NOT live (all other typs then LIVE)
 	if [[ $var_typ_j = "LIVE" ]]; then
 		export var_live="true"
 		export var_network_suffix="live"
 		docker network create nginx-proxy-live
-		docker-compose -p LIVE -f $var_script_path/_nginx-proxy-surrounding/LIVE/docker-compose.yml up -d
-		docker cp $var_script_path/_nginx-proxy-surrounding/index.html surrounding-live.vcap.me:/usr/share/nginx/html/index.html 
-		docker exec -it surrounding-live.vcap.me sed -i "s/PLACEHOLDER HEADER/Environment Type LIVE/g" /usr/share/nginx/html/index.html
+		docker-compose -p LIVE -f $var_script_path/_nginx-proxy-surrounding/LIVE/docker-compose.yml up -d --remove-orphans
 	fi
 	if 	[[ $var_typ_j = "REF"  	]] ||\
 		[[ $var_typ_j = "STAGE" ]] ||\
@@ -251,9 +252,7 @@ do
 		export var_live="false"
 		export var_network_suffix="notlive"
 		docker network create nginx-proxy-notlive
-		docker-compose -p NOTLIVE -f $var_script_path/_nginx-proxy-surrounding/NOTLIVE/docker-compose.yml up -d
-		docker cp $var_script_path/_nginx-proxy-surrounding/index.html surrounding-notlive.vcap.me:/usr/share/nginx/html/index.html 
-		docker exec -it surrounding-notlive.vcap.me sed -i "s/PLACEHOLDER HEADER/Environment Type NOT LIVE/g" /usr/share/nginx/html/index.html
+		docker-compose -p NOTLIVE -f $var_script_path/_nginx-proxy-surrounding/NOTLIVE/docker-compose.yml up -d --remove-orphans
 	fi
 	
 	for var_environment_i in "${var_environment[@]}"
@@ -262,21 +261,37 @@ do
 		export var_http_port
 		export var_server_name=$var_typ_j"_"$var_environment_i"."$var_base
 		export var_project_name="project_"$var_server_name
+		echo "Starting with type "$var_typ_j" and Environment "$var_environment_i
+		
+		# create enviornment files if not persent
 		mkdir -p -- $var_script_path/$var_environment_i
 		cp -n "$var_script_path/_jwilder_whoami/docker-compose.yml" "$var_script_path/$var_environment_i/docker-compose.yml"
 		cp -n "$var_script_path/_jwilder_whoami/docker-compose.min.yml" "$var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml"
+		
+		cp "$var_script_path/_templates/environment_bevorcomposeup.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.sh"
+		cp "$var_script_path/_templates/environment_bevorcomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
+		
+		cp "$var_script_path/_templates/environment_aftercomposeup.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
+		cp "$var_script_path/_templates/environment_aftercomposeup.$var_typ_j.sh" "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+		#sudo chmod +x "$var_script_path/$var_environment_i/*.sh"
+		
+		# execute individuall script bevor docker start
+		echo "calling ..... $var_environment_i/environment_bevorcomposeup.sh"
+		source "$var_script_path/$var_environment_i/environment_bevorcomposeup.sh"
+		echo "calling ..... $var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
+		source "$var_script_path/$var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
+		# start docker 
 		docker-compose \
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
 						up -d --remove-orphans
-		#dokument in surrounding server
-		if [[ var_live = "false" ]]; then
-			echo "http://"$var_server_name":"$var_http_proxyport_live
-		else 
-			echo "http://"$var_server_name":"$var_http_proxyport_notlive
-		fi
-		#docker exec -it surrounding-notlive sed -i "s/Server:/Server: NOTLIVE/g" /usr/share/nginx/html/index.html
+		# execute individuall script after docker start
+		echo "calling ..... $var_environment_i/environment_aftercomposeup.sh"
+		source "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
+		echo "calling ..... $var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+		source "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+
 		#increment ports for new loop
 		export var_http_port=$((var_http_port+30))
 		export var_sql_port=$((var_sql_port+1))
@@ -285,10 +300,25 @@ do
 		
 	done
 done 
+#finalize an copy index.html to surroundingserver
+var_index_live="${var_index_live//PLACEHOLDER HEADER/Environment Type LIVE}"
+var_index_notlive="${var_index_notlive//PLACEHOLDER HEADER/Environment Type NOT LIVE}"
+#clean up placeholder
+var_index_live="${var_index_live//PLACEHOLDER-MIDDLE8/}"
+var_index_live="${var_index_live//PLACEHOLDER-LEFT2/}"
+var_index_live="${var_index_live//PLACEHOLDER-RIGHT2/}"
+var_index_notlive="${var_index_notlive//PLACEHOLDER-MIDDLE8/}"
+var_index_notlive="${var_index_notlive//PLACEHOLDER-LEFT2/}"
+var_index_notlive="${var_index_notlive//PLACEHOLDER-RIGHT2/}"
+
+sudo echo $var_index_live > $var_temp_dir/LIVE/index.html
+sudo echo $var_index_notlive > $var_temp_dir/NOTLIVE/index.html
+
+docker cp $var_temp_dir/LIVE/index.html surrounding-live.vcap.me:/usr/share/nginx/html/index.html 
+docker cp $var_temp_dir/NOTLIVE/index.html surrounding-notlive.vcap.me:/usr/share/nginx/html/index.html 
+
 echo
-echo
-echo
-docker ps | awk '{print $NF}'
+#docker ps | awk '{print $NF}'
 
 : '
 while [ condition ]
@@ -387,5 +417,7 @@ git fetch --all && git reset --hard origin/master && chmod 700 setup_environment
 docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_nginx-proxy-surrounding/docker-compose.yml up -d
 
 docker network -f prune 
+
+docker  run -d --restart=always -p 127.0.0.1:23750:2375 -v /var/run/docker.sock:/var/run/docker.sock  alpine/socat  tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 
 '
