@@ -231,9 +231,9 @@ sudo chown -R $USER:$USER $var_temp_dir/NOTLIVE/
 sudo chmod -R 770 $var_temp_dir/NOTLIVE/
 
 # Prepare surrounding index.html
-var_index_live=$(<$var_script_path/_templates/index.html)
-var_index_notlive=$(<$var_script_path/_templates/index.html)
-
+export var_index_live=$(<$var_script_path/_templates/index.html)
+export var_index_notlive=$(<$var_script_path/_templates/index.html)
+export var_index_newcard="<div class=\"card\"><div class=\"card-header\" id=\"CARD HEADER\">  <h2 class=\"mb-0\"><button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseCARD HEADER\" aria-controls=\"collapseCARD HEADER\">  CARD HEADER</button>  </h2></div><div id=\"collapseCARD HEADER\" class=\"collapse\" aria-labelledby=\"CARD HEADER\" data-parent=\"#accordionMIDDLE\">  <div class=\"card-body\">  <ul>CARD CONTENT</ul>  </div></div>  </div>  NEW CARD"
 # Create Network
 # create_docker_network
 
@@ -293,10 +293,10 @@ do
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
 						up -d --remove-orphans --force-recreate
 		# execute individuall script after docker start
-		echo "calling ..... $var_environment_i/environment_aftercomposeup.sh"
-		source "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
 		echo "calling ..... $var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
 		source "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+		echo "calling ..... $var_environment_i/environment_aftercomposeup.sh"
+		source "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
 
 		#increment ports for new loop
 		export var_http_port=$((var_http_port+30))
@@ -311,12 +311,12 @@ var_index_live="${var_index_live//PLACEHOLDER HEADER/Environment Type LIVE}"
 var_index_live="${var_index_live//alert-primary/alert-danger}"
 var_index_notlive="${var_index_notlive//PLACEHOLDER HEADER/Environment Type NOT LIVE}"
 #clean up placeholder
-var_index_live="${var_index_live//PLACEHOLDER-MIDDLE8/}"
 var_index_live="${var_index_live//PLACEHOLDER-LEFT2/}"
 var_index_live="${var_index_live//PLACEHOLDER-RIGHT2/}"
-var_index_notlive="${var_index_notlive//PLACEHOLDER-MIDDLE8/}"
+var_index_live="${var_index_live//$var_index_newcard/}"
 var_index_notlive="${var_index_notlive//PLACEHOLDER-LEFT2/}"
 var_index_notlive="${var_index_notlive//PLACEHOLDER-RIGHT2/}"
+var_index_notlive="${var_index_notlive//$var_index_newcard/}"
 
 sudo echo $var_index_live > $var_temp_dir/LIVE/index.html
 sudo echo $var_index_notlive > $var_temp_dir/NOTLIVE/index.html
