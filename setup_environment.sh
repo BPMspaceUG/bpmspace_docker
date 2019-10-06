@@ -31,8 +31,9 @@ create_docker_network() {
 export var_base="vcap.me"
 export var_steps_all=true
 export var_typ_all=true
-#var_environment=( "BASE" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
-export var_environment=( "BASE" "LIAM2_ICO"  )
+
+#var_environment=( "BASE" "APMS2" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO" "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO" )
+export var_environment=( "BASE" "APMS2"  )
 export var_typ=( "LIVE" "TEST" "DEV" )
 export var_release_full=true
 export var_release_delta=false
@@ -91,10 +92,13 @@ while [ "$1" != "" ]; do
 									var_temp_arguments=${1^^}
 									case $var_temp_arguments in
 										"ALL"  )
-											var_environment=(  "BASE" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO"  "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
+											var_environment=(  "BASE" "APMS2" "LIAM2_ICO" "SQMS_ICO" "SQMS_EXPORT" "SQMS2_ICO" "COMS_ICO"  "BWNG_MITSM" "WWW_BPMSPACE" "WWW_ICO" "WWW_MITSM" "MOODLE_ICO"  )
 											;;
 										"BASE"   )
 											var_environment+=( "BASE" )
+											;;
+										"APMS2"  )
+											var_environment+=( "APMS2" )
 											;;
 										"LIAM2_ICO"  )
 											var_environment+=( "LIAM2_ICO" )
@@ -304,6 +308,7 @@ do
 done 
 #finalize an copy index.html to surroundingserver
 var_index_live="${var_index_live//PLACEHOLDER HEADER/Environment Type LIVE}"
+var_index_live="${var_index_live//alert-primary/alert-danger}"
 var_index_notlive="${var_index_notlive//PLACEHOLDER HEADER/Environment Type NOT LIVE}"
 #clean up placeholder
 var_index_live="${var_index_live//PLACEHOLDER-MIDDLE8/}"
@@ -320,105 +325,7 @@ docker cp $var_temp_dir/LIVE/index.html surrounding-live.vcap.me:/usr/share/ngin
 docker cp $var_temp_dir/NOTLIVE/index.html surrounding-notlive.vcap.me:/usr/share/nginx/html/index.html 
 
 #docker ps | awk '{print $NF}'
-
-: '
-while [ condition ]
-do
-   statements1      #Executed as long as condition is true and/or, up to a disaster-condition if any.
-   statements2
-  if (disaster-condition)
-  then
-	break       	   #Abandon the while lopp.
-  fi
-  statements3          #While good and, no disaster-condition.
-done
-
-string="My long string"
-if [[ $string == *"My long"* ]]; then
-  echo "found!"
-fi
-
-# create docker volumes !! VOLUMES ONLY FOR LIVE AND DEV SYSTEM !!
-if [ $typ_live ]; then
-	if [ $var_steps_all | $var_steps_vol ]; then
-		create_docker_volumes LIVE MARIADB
-		create_docker_volumes LIVE MAILHOG
-		create_docker_volumes LIVE PROXY
-		create_docker_volumes LIVE GITINT
-		create_docker_volumes LIVE GITEXT
-		create_docker_volumes LIVE IMGINT
-		create_docker_volumes LIVE IMGEXT
-		#LIAM 2
-		if [ $env_all | $env_liam2 ]; then
-			create_docker_volumes LIVE LIAM2
-		fi
-		#LIAM 2 CLIENT
-		if [ $env_all | $env_liam2_client ]; then
-			create_docker_volumes LIVE LIAM2-CLIENT
-		fi
-		#SQMS 1
-		if [ $env_all | $env_sqms ]; then
-			create_docker_volumes LIVE SQMS
-		fi
-		#SQMS 1 CLIENT
-		if [ $env_all | $env_sqms_client ]; then
-			create_docker_volumes LIVE SQMS-CLIENT
-		fi
-		#SQMS 1 EXPORT
-		if [ $env_all | $env_sqms_export ]; then
-			create_docker_volumes LIVE SQMS-EXPORT
-		fi
-		#SQMS 2
-		if [ $env_all | $env_sqms2 ]; then
-			create_docker_volumes LIVE SQMS2
-		fi
-		#SQMS 2 CLIENT
-		if [ $env_all | $env_sqms2_client ]; then
-			create_docker_volumes LIVE SQMS2-CLIENT
-		fi
-		#COMS 1
-		if [ $env_all | $env_coms ]; then
-			create_docker_volumes LIVE COMS
-		fi
-		#COMS 1 CLIENT
-		if [ $env_all | $env_coms_client ]; then
-			create_docker_volumes LIVE COMS-CLIENT
-		fi
-		#COMS 2
-		if [ $env_all | $env_coms2 ]; then
-			create_docker_volumes LIVE COMS2
-		fi
-		#COMS 2 CLIENT
-		if [ $env_all | $env_coms2_client ]; then
-			create_docker_volumes LIVE COMS2-CLIENT
-		fi
-		
-		#BWNGmitsm CLIENT
-		if [ $env_all | $env_BWNGmitsm ]; then
-			create_docker_volumes LIVE BWNGmitsm
-		fi
-		
-		#WWW_BPMSPACE
-		if [ $env_all | $env_www_bpm ]; then
-			create_docker_volumes LIVE BWNGmitsm-WWW
-		fi
-		#WWW_ICO
-		if [ $env_all | $env_www_ico ]; then
-			create_docker_volumes LIVE ICO-WWW
-		fi
-		#WWW_MITSM
-		if [ $env_all | $env_www_mitsm ]; then
-			create_docker_volumes LIVE MITSM-WWWM
-		fi
-	fi
-fi
-
-git fetch --all && git reset --hard origin/master && chmod 700 setup_environment.sh  && ./setup_environment.sh && ./setup_environment.sh -E LIAM2_ICO && ./setup_environment.sh -E LIAM2_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_environment.sh -E ALL -T ALL
-
-docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_nginx-proxy-surrounding/docker-compose.yml up -d
-
-docker network -f prune 
-
-docker  run -d --restart=always -p 127.0.0.1:23750:2375 -v /var/run/docker.sock:/var/run/docker.sock  alpine/socat  tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
-
-'
+#git fetch --all && git reset --hard origin/master && chmod 700 setup_environment.sh  && ./setup_environment.sh && ./setup_environment.sh -E LIAM2_ICO && ./setup_environment.sh -E LIAM2_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE && ./setup_environment.sh -E BASE LIAM2_ICO SQMS_ICO -T LIVE REF && ./setup_environment.sh -E ALL -T ALL
+#docker stop  $(docker ps -a -q) && docker rm $(docker ps -a -q) &&  docker-compose -f /home/rob/bpmspace_docker/_nginx-proxy-surrounding/docker-compose.yml up -d
+#docker network -f prune 
+#docker  run -d --restart=always -p 127.0.0.1:23750:2375 -v /var/run/docker.sock:/var/run/docker.sock  alpine/socat  tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock

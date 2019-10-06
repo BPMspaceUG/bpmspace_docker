@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+ whois:
+  hostname: ${var_server_name}
+  container_name: ${var_server_name}
+  image: jwilder/whoami
+  environment:  
+    - VIRTUAL_HOST=${var_server_name}
+    - NODE_ENV=${var_environment_i}
+networks:
+  default:
+    external:
+      name: nginx-proxy-${var_network_suffix}
