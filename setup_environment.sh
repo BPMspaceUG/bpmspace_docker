@@ -282,20 +282,21 @@ do
 		#sudo chmod +x "$var_script_path/$var_environment_i/*.sh"
 		
 		# execute individuall script bevor docker start
-		echo "calling ..... $var_environment_i/environment_bevorcomposeup.sh"
+		echo "calling .... $var_environment_i/environment_bevorcomposeup.sh"
 		source "$var_script_path/$var_environment_i/environment_bevorcomposeup.sh"
-		echo "calling ..... $var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
+		echo "calling .... .... $var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
 		source "$var_script_path/$var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
-		# start docker 
+		# start docker
+		echo "Starting Docker Compose .... .... $var_environment_i/environment_bevorcomposeup.$var_typ_j.sh"
 		docker-compose \
 						--project-name=$var_project_name\
 						-f $var_script_path/$var_environment_i/docker-compose.yml \
 						-f $var_script_path/$var_environment_i/docker-compose.$var_typ_j.yml \
 						up -d --remove-orphans --force-recreate
 		# execute individuall script after docker start
-		echo "calling ..... $var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
+		echo "calling .... .... $var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
 		source "$var_script_path/$var_environment_i/environment_aftercomposeup.$var_typ_j.sh"
-		echo "calling ..... $var_environment_i/environment_aftercomposeup.sh"
+		echo "calling .... $var_environment_i/environment_aftercomposeup.sh"
 		source "$var_script_path/$var_environment_i/environment_aftercomposeup.sh"
 
 		#increment ports for new loop
