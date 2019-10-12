@@ -1,4 +1,4 @@
-FROM php:7.3.5-apache-stretch
+FROM richarvey/nginx-php-fpm:latest
 RUN docker-php-ext-install pdo_mysql mysqli
 RUN docker-php-ext-enable pdo_mysql mysqli
 RUN apt-get update
