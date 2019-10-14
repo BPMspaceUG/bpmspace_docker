@@ -33,7 +33,19 @@ services:
         networks:
             testing_net:
                 ipv4_address: LIAM2_IP_CLIENT
-         
+    
+    coms-client2-php-apache:
+        build:
+            context: ./_bpmspace_base
+        restart: always
+        hostname: COMS-CLIENT2
+        ports:
+            - 3380:80
+            - 3343:443
+        networks:
+            testing_net:
+                ipv4_address: ${COMS_IP_CLIENT}
+                
     mariadb:
         image: mariadb:10.1
         restart: always
@@ -102,6 +114,13 @@ volumes:
         external:
             name: PREFIX-LIAM2-CLIENT-www-config
 
+    COMS-CLIENT2-www-data:
+        external:
+            name: DEV-LIAM2-CLIENT-www-data
+    COMS-CLIENT2-www-config:
+        external:
+            name: DEV-LIAM2-CLIENT-www-config
+            
 networks:
     testing_net:
         ipam:

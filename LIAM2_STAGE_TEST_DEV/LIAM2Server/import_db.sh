@@ -10,4 +10,6 @@ while ! mysql --protocol TCP -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 
         exit 1
     fi;
 done
-mysql -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 3306 < /var/www/html/sqldump/LIAM2_SQLDUMP_FILE
+#mysql -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 3306 < /var/www/html/sqldump/LIAM2_SQLDUMP_FILE
+mysql -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 3306 < /var/www/html/sqldump/bpmspace_liam2_v2_structure.sql
+mysql -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 3306 < /var/www/html/sqldump/bpmspace_liam2_v2_statemachine.sql
