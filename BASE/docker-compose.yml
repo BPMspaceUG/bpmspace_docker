@@ -1,15 +1,39 @@
-version: '2'
+version: '3.7'
 services:
- helloworld:
-  hostname: ${var_server_name}
-  container_name: ${var_server_name}
-  image: jwilder/whoami
-  environment:  
-    - VIRTUAL_HOST=${var_server_name}
-    - VIRTUAL_PORT=${var_http_port}"
-    - NODE_ENV=${var_environment_i}
-    
+    mariadb:
+        image: mariadb:10.1
+        restart: always
+        hostname: db-${var_server_name}
+        container_name: db-${var_server_name}
+        ports:
+            - ${var_sql_port}:3306
+        environment:
+            TZ: "Europe/Rome"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no" 
+            MYSQL_ROOT_PASSWORD: ${var_db_rootpasswd}
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        hostname: phpmyadmin-${var_server_name}
+        container_name: phpmyadmin-${var_server_name}
+        environment:  
+          - VIRTUAL_HOST=phpmyadmin-${var_server_name}
+          - PMA_HOST=db-${var_server_name}
+        links:
+            - mariadb
+    mailhog:
+        image: mailhog/mailhog
+        hostname: mailhog-${var_server_name}
+        container_name: mailhog-${var_server_name}
+        restart: always
+        environment:  
+          - VIRTUAL_HOST=mailhog-${var_server_name}
+          - VIRTUAL_PORT=8025
+        healthcheck:
+         test: echo | telnet 127.0.0.1 25
+
 networks:
   default:
     external:
-      name: nginx-proxy
+      name: nginx-proxy-${var_network_suffix}

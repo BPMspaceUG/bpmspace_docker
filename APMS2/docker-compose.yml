@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+    server:
+        image: richarvey/nginx-php-fpm:latest
+        restart: always
+        hostname: server-${var_server_name}
+        container_name: server-${var_server_name}
+        environment:  
+          - VIRTUAL_HOST=server-${var_server_name}
+networks:
+  default:
+    external:
+      name: nginx-proxy-${var_network_suffix}

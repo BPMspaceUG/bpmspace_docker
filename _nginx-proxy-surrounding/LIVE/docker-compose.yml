@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  nginx-proxy-live:
+    hostname: nginx-proxy-live.${var_base}
+    container_name: nginx-proxy-live.${var_base}
+    image: jwilder/nginx-proxy
+    ports:
+        - "${var_http_proxyport_live}:80"
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        
+  surrounding:
+    hostname: surrounding-live.${var_base}
+    container_name: surrounding-live.${var_base}
+    image: nginx
+    restart: always
+    environment:  
+    - VIRTUAL_HOST=surrounding-live.${var_base}
+       
+networks:
+    default:
+      external:
+        name: nginx-proxy-live

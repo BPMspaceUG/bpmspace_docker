@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  nginx-proxy-notlive:
+    hostname: nginx-proxy-notlive.${var_base}
+    container_name: nginx-proxy-notlive.${var_base}
+    image: jwilder/nginx-proxy
+    ports:
+        - "${var_http_proxyport_notlive}:80"
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        
+  surrounding:
+    hostname: surrounding-notlive.${var_base}
+    container_name: surrounding-notlive.${var_base}
+    image: nginx
+    restart: always
+    environment:  
+    - VIRTUAL_HOST=surrounding-notlive.${var_base}
+       
+networks:
+    default:
+      external:
+        name: nginx-proxy-notlive

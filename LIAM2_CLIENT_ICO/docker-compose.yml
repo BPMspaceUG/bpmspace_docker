@@ -1,8 +1,0 @@
-version: '2'
-services:
- helloworld:
-  hostname: ${var_server_name}
-  container_name: ${var_server_name}
-  image: nginxdemos/hello
-  ports:
-   - "${var_helloworld_port}:80"
