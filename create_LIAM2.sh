@@ -5,8 +5,9 @@ TMP_DIR=/tmp/$(date +"%m_%d_%Y_%s")
 #create TEMP Folder and SUB
 mkdir -p -- $TMP_DIR
 mkdir -p -- $TMP_DIR/_bpmspace_base
-mkdir -p -- $TMP_DIR/LIAM2-SERVER_var-www-html/
+mkdir -p -- $TMP_DIR//LIAM2-SERVER-html/
 mkdir -p -- $TMP_DIR/LIAM2-CLIENT-html/
+mkdir -p -- $TMP_DIR/COMS-CLIENT2-html/
 cd $TMP_DIR
 # get (secret) parameters
 source $SCRIPT/general.secret.conf
@@ -15,6 +16,7 @@ source $SCRIPT/general.secret.conf
 
 LIAM2_SERVER=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_liam2-php-apache_1"
 LIAM2_CLIENT=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_liam2-client-php-apache_1"
+COMS_CLIENT2=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_coms-client2-php-apache_1"
 MARIADB=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mariadb_1"
 MAILHOG=$(echo "$PREFIX" | tr '[:upper:]' '[:lower:]')"_mailhog"
 
@@ -27,17 +29,20 @@ docker volume create --name $PREFIX-LIAM2-www-data
 docker volume create --name $PREFIX-LIAM2-www-config
 docker volume create --name $PREFIX-LIAM2-CLIENT-www-data
 docker volume create --name $PREFIX-LIAM2-CLIENT-www-config
+docker volume create --name $PREFIX-COMS-CLIENT2-www-data
+docker volume create --name $PREFIX-COMS-CLIENT2-www-config
 docker volume create --name $PREFIX-mariadb-data
 docker volume create --name $PREFIX-mariadb-config
 docker volume create --name $PREFIX-mailhog-data
 docker volume create --name $PREFIX-mailhog-config
 
 #download DB LIAM2 Structure and minimum Data
- wget --no-hsts $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
+# wget --no-hsts $LIAM2_SQLDUMP_URL$LIAM2_SQLDUMP_FILE -P $TMP_DIR
 
 # download git LIAM2 and LIAM2-client in a temp HTML dir + change owner
 git clone $LIAM2_GITHUB_REPO_URL $TMP_DIR/LIAM2-SERVER-html/
 git clone $LIAM2_CLIENT_GITHUB_REPO_URL $TMP_DIR/LIAM2-CLIENT-html/
+git clone $COMS_CLIENT2_GITHUB_REPO_URL $TMP_DIR/COMS-CLIENT2-html/
 
 # copy LIAM config to HTML temp  Folder + replace Parameters
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Server/bpmspace_liam2_v2-config_EXAMPLEsecret.inc.php $TMP_DIR/LIAM2-SERVER-html/bpmspace_liam2_v2-config.secret.inc.php
@@ -52,6 +57,13 @@ cp $SCRIPT/LIAM2_STAGE_TEST_DEV/LIAM2Client/LIAM2_Client_api_EXAMPLEsecret.inc.p
 sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/LIAM2_Client_api.secret.inc.php
 sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php $TMP_DIR/LIAM2-CLIENT-html/inc
 sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT-html/
+
+# copy COMS CLIENT2 config to temp HTML dir
+cp $SCRIPT/LIAM2_STAGE_TEST_DEV/COMS_Client2/COMS_Client2_api_EXAMPLEsecret.inc.php $TMP_DIR/COMS_Client2_api.secret.inc.php
+sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/COMS_Client2_api.secret.inc.php
+sed -i "s/COMS_URL/$LIAM2_IP/g" $TMP_DIR/COMS_Client2_api.secret.inc.php
+sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php $TMP_DIR/LIAM2-CLIENT-html/inc
+sudo chown -R www-data:www-data $TMP_DIR/COMS_Client2_api.secret.inc.php
 
 #copy docker-compose to temp - replace parameter from config file - Start enviroment - ORDER of switches IMPORTANT
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/docker-compose.yml $TMP_DIR/docker-compose.yml
@@ -89,7 +101,7 @@ IFS= read -r -d '' LIAM2_ACCEPTANCETEST_VAR < $TMP_DIR/$LIAM2_SERVER_ACCEPTANCET
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//'"'/'\"'/}
 LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
-# prepare LIAM SERVER Acceptance Mail 
+# prepare LIAM CLIENT Acceptance Mail 
 wget --no-hsts $LIAM2_CLIENT_ACCEPTANCETEST_URL/$LIAM2_CLIENT_ACCEPTANCETEST_FILE -P $TMP_DIR
 sed -i "s/HOSTNAME/$HOSTNAME/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
 sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/$LIAM2_CLIENT_ACCEPTANCETEST_FILE
@@ -117,6 +129,7 @@ docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
 #copy temp html dir to docker
 docker cp $TMP_DIR/LIAM2-SERVER-html/. $LIAM2_SERVER:/var/www/html
 docker cp $TMP_DIR/LIAM2-CLIENT-html/. $LIAM2_CLIENT:/var/www/html
+docker cp $TMP_DIR/COMS-CLIENT2-html/. $COMS_CLIENT2:/var/www/html
 
 #prepare fetch all command and copy to contaier
 echo "prepare fetch all command"
@@ -132,6 +145,11 @@ docker exec -it $LIAM2_CLIENT /bin/sh -c  "mkdir -p -- /var/www/script/"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "mkdir -p -- /var/www/html/release_cmd/"
 docker cp $TMP_DIR/fetch_all.php $LIAM2_CLIENT:/var/www/html/release_cmd/fetch_all.php
 docker cp $TMP_DIR/fetch_all.sh $LIAM2_CLIENT:/var/www/script/fetch_all.sh
+
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "mkdir -p -- /var/www/script/"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "mkdir -p -- /var/www/html/release_cmd/"
+docker cp $TMP_DIR/fetch_all.php $COMS_CLIENT2:/var/www/html/release_cmd/fetch_all.php
+docker cp $TMP_DIR/fetch_all.sh $COMS_CLIENT2:/var/www/script/fetch_all.sh
 
 #prepare DB import command
 echo "prepare DB import command"
@@ -178,6 +196,7 @@ echo "IMPORT done"
 echo "git fetch all - reset repos"
 docker exec -it $LIAM2_SERVER /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
+docker exec -it $LIAM2_CLIENT /bin/sh -c  "cd /var/www/html/ && git fetch --all && git reset --hard origin/master"
 
 # set owner and execute 
 echo "set owner and execute"
@@ -193,6 +212,13 @@ docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/html -type d -exec chmo
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type f -exec chmod 660 {} \;"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "find /var/www/script -type d -exec chmod 770 {} \;"
 docker exec -it $LIAM2_CLIENT /bin/sh -c  "chmod +x /var/www/script/*.sh"
+
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "chown -R www-data:www-data /var/www/"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "find /var/www/html -type f -exec chmod 660 {} \;"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "find /var/www/html -type d -exec chmod 770 {} \;"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "find /var/www/script -type f -exec chmod 660 {} \;"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "find /var/www/script -type d -exec chmod 770 {} \;"
+docker exec -it $COMS_CLIENT2 /bin/sh -c  "chmod +x /var/www/script/*.sh"
 
 ENVIROMENTDESC="<h1>Test Protokoll</h1>
 <ul>
@@ -220,6 +246,11 @@ ENVIROMENTDESC="<h1>Test Protokoll</h1>
 <ul>
 <li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP \">LIAM2 Client</a></li>
 <li><a href=\"http://$HOSTNAME:$EXT_PORT_LIAM2_CLIENT_HTTP/release_cmd/fetch_all.php\">LIAM2 Client FETCH ALL</a></li>
+</ul>
+<h2>COMS Client2</h2>
+<ul>
+<li><a href=\"http://$HOSTNAME:33080 \">COMS Client2</a></li>
+<li><a href=\"http://$HOSTNAME:33080/release_cmd/fetch_all.php\">COMS Client2 FETCH ALL</a></li>
 </ul>
 <h2>Docker Commands</h2>
 <ul>
@@ -256,7 +287,7 @@ sudo chown -R www-data:www-data /usr/lib/cgi-bin/*.sh
 sudo chmod +x /usr/lib/cgi-bin/*.sh
 
 echo "more info under $DOCKERHOSTPROTOKOLL://$HOSTNAME:$DOCKERHOSTPORT\index.html"
-sudo rm -rf $TMP_DIR
+#sudo rm $TMP_DIR
 cd $HOME
 
 
