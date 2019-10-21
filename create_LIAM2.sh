@@ -5,9 +5,10 @@ TMP_DIR=/tmp/$(date +"%m_%d_%Y_%s")
 #create TEMP Folder and SUB
 mkdir -p -- $TMP_DIR
 mkdir -p -- $TMP_DIR/_bpmspace_base
-mkdir -p -- $TMP_DIR//LIAM2-SERVER-html/
+mkdir -p -- $TMP_DIR/LIAM2-SERVER-html/
 mkdir -p -- $TMP_DIR/LIAM2-CLIENT-html/
 mkdir -p -- $TMP_DIR/COMS-CLIENT2-html/
+
 cd $TMP_DIR
 # get (secret) parameters
 source $SCRIPT/general.secret.conf
