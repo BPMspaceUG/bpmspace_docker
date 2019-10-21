@@ -201,7 +201,7 @@ echo "config Mailserver and Send Testmail"
  docker exec -it $COMS_CLIENT2 /bin/sh -c  "service postfix stop"
  docker exec -it $COMS_CLIENT2 /bin/sh -c  "rm -f /var/spool/postfix/pid/master.pid"
  docker exec -it $COMS_CLIENT2 /bin/sh -c  "service postfix start"
- docker exec -it $COMS_CLIENT2 /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from COMS_CLIENT2\", date(DATE_RFC822), \"From: liam2-client <coms-client2@bpmspace.net>\");'"
+ docker exec -it $COMS_CLIENT2 /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from COMS_CLIENT2\", date(DATE_RFC822), \"From: coms-client2 <coms-client2@bpmspace.net>\");'"
 
  # import DB
 echo "IMPORT DB on LIAM2"
