@@ -1,4 +1,5 @@
 #!/bin/bash
+apt-get install -y mysql-client
 maxcounter=20
 counter=1
 while ! mysql --protocol TCP -u root -pMARIADB_ROOT_PASSWD -h MARIADB_IP --port 3306 -e "show databases;" > /dev/null 2>&1; do

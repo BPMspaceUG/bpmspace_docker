@@ -121,11 +121,14 @@ LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
 
 #config Mail relay & restart Postfix and send testmail
-cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Server_main.cf
-cp $SCRIPT/_bpmspace_base/main.cf $TMP_DIR/LIAM2-Client_main.cf
 
-docker cp $TMP_DIR/LIAM2-Server_main.cf $LIAM2_SERVER:/etc/postfix/main.cf
-docker cp $TMP_DIR/LIAM2-Client_main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
+docker cp $SCRIPT/_bpmspace_base/main.cf $LIAM2_SERVER:/etc/postfix/main.cf
+docker cp $SCRIPT/_bpmspace_base/main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
+docker cp $SCRIPT/_bpmspace_base/main.cf $COMS_CLIENT2:/etc/postfix/main.cf
+
+docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_SERVER:/usr/local/etc/php
+docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_CLIENT:/usr/local/etc/php
+docker cp $SCRIPT/_bpmspace_base/php.ini $COMS_CLIENT2:/usr/local/etc/php
 
 #copy temp html dir to docker
 docker cp $TMP_DIR/LIAM2-SERVER-html/. $LIAM2_SERVER:/var/www/html
