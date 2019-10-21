@@ -40,12 +40,14 @@ services:
         restart: always
         hostname: COMS-CLIENT2
         ports:
-            - 33080:80
-            - 33043:443
+            - EXT_PORT_COMS_CLIENT2_HTTP:80
+            - EXT_PORT_COMS_CLIENT2_HTTPS:443
         volumes:
             - COMS-CLIENT2-www-data:/var/www/html
             - COMS-CLIENT2-www-config:/root/config
-                
+        networks:
+            testing_net:
+                ipv4_address: COMS_IP_CLIENT              
     mariadb:
         image: mariadb:10.1
         restart: always

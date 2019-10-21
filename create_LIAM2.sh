@@ -62,7 +62,7 @@ sudo chown -R www-data:www-data $TMP_DIR/LIAM2-CLIENT-html/
 # copy COMS CLIENT2 config to temp HTML dir
 cp $SCRIPT/LIAM2_STAGE_TEST_DEV/COMS_Client2/COMS_Client2_api_EXAMPLEsecret.inc.php $TMP_DIR/COMS_Client2_api.secret.inc.php
 sed -i "s/LIAM2_IP/$LIAM2_IP/g" $TMP_DIR/COMS_Client2_api.secret.inc.php
-sed -i "s/COMS_URL/$LIAM2_IP/g" $TMP_DIR/COMS_Client2_api.secret.inc.php
+sed -i "s/COMS_URL/$COMS_URL/g" $TMP_DIR/COMS_Client2_api.secret.inc.php
 sudo cp $TMP_DIR/LIAM2_Client_api.secret.inc.php $TMP_DIR/LIAM2-CLIENT-html/inc
 sudo chown -R www-data:www-data $TMP_DIR/COMS_Client2_api.secret.inc.php
 
@@ -79,6 +79,9 @@ sed -i "s/MARIADB_IP/$MARIADB_IP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_MAILHOG_SMPT/$EXT_PORT_MAILHOG_SMPT/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_MAILHOG_HTTP/$EXT_PORT_MAILHOG_HTTP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/IP_MAILHOG/$IP_MAILHOG/g" $TMP_DIR/docker-compose.yml
+sed -i "s/EXT_PORT_COMS_CLIENT2_HTTPS/$EXT_PORT_COMS_CLIENT2_HTTPS/g" $TMP_DIR/docker-compose.yml
+sed -i "s/EXT_PORT_COMS_CLIENT2_HTTP/$EXT_PORT_COMS_CLIENT2_HTTP/g" $TMP_DIR/docker-compose.yml
+sed -i "s/COMS_IP_CLIENT/$COMS_IP_CLIENT/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTPS/$EXT_PORT_LIAM2_CLIENT_HTTPS/g" $TMP_DIR/docker-compose.yml
 sed -i "s/EXT_PORT_LIAM2_CLIENT_HTTP/$EXT_PORT_LIAM2_CLIENT_HTTP/g" $TMP_DIR/docker-compose.yml
 sed -i "s/LIAM2_IP_CLIENT/$LIAM2_IP_CLIENT/g" $TMP_DIR/docker-compose.yml
@@ -121,14 +124,14 @@ LIAM2_ACCEPTANCETEST_VAR=${LIAM2_ACCEPTANCETEST_VAR//$'\n'/'\n'}
 
 
 #config Mail relay & restart Postfix and send testmail
-
 docker cp $SCRIPT/_bpmspace_base/main.cf $LIAM2_SERVER:/etc/postfix/main.cf
 docker cp $SCRIPT/_bpmspace_base/main.cf $LIAM2_CLIENT:/etc/postfix/main.cf
 docker cp $SCRIPT/_bpmspace_base/main.cf $COMS_CLIENT2:/etc/postfix/main.cf
 
-docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_SERVER:/usr/local/etc/php
-docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_CLIENT:/usr/local/etc/php
-docker cp $SCRIPT/_bpmspace_base/php.ini $COMS_CLIENT2:/usr/local/etc/php
+# copy php.ini
+docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_SERVER:/usr/local/etc/php/php.ini
+docker cp $SCRIPT/_bpmspace_base/php.ini $LIAM2_CLIENT:/usr/local/etc/php/php.ini
+docker cp $SCRIPT/_bpmspace_base/php.ini $COMS_CLIENT2:/usr/local/etc/php/php.ini
 
 #copy temp html dir to docker
 docker cp $TMP_DIR/LIAM2-SERVER-html/. $LIAM2_SERVER:/var/www/html
@@ -187,10 +190,18 @@ docker cp $TMP_DIR/import_dbdiff.sh $LIAM2_SERVER:/var/www/script/import_dbdiff.
 
 # Restart Mail server and send testmail
 echo "config Mailserver and Send Testmail"
- docker exec -it $LIAM2_SERVER /bin/sh -c  "service postfix restart"
- docker exec -it $LIAM2_SERVER /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2 $PREFIX-Server\", date(DATE_RFC822), \"From: liam2 <liam2@bpmspace.net>\");'"
- docker exec -it $LIAM2_CLIENT /bin/sh -c  "service postfix restart"
- docker exec -it $LIAM2_CLIENT /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2 $PREFIX-Client\", date(DATE_RFC822), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
+ docker exec -it $LIAM2_SERVER /bin/sh -c  "service postfix stop"
+ docker exec -it $LIAM2_SERVER /bin/sh -c  "rm -f /var/spool/postfix/pid/master.pid"
+ docker exec -it $LIAM2_SERVER /bin/sh -c  "service postfix start"
+ docker exec -it $LIAM2_SERVER /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2_SERVER\", date(DATE_RFC822), \"From: liam2 <liam2@bpmspace.net>\");'"
+ docker exec -it $LIAM2_CLIENT /bin/sh -c  "service postfix stop"
+ docker exec -it $LIAM2_CLIENT /bin/sh -c  "rm -f /var/spool/postfix/pid/master.pid"
+ docker exec -it $LIAM2_CLIENT /bin/sh -c  "service postfix start"
+ docker exec -it $LIAM2_CLIENT /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from LIAM2_CLIENT\", date(DATE_RFC822), \"From: liam2-client <liam2-client@bpmspace.net>\");'"
+ docker exec -it $COMS_CLIENT2 /bin/sh -c  "service postfix stop"
+ docker exec -it $COMS_CLIENT2 /bin/sh -c  "rm -f /var/spool/postfix/pid/master.pid"
+ docker exec -it $COMS_CLIENT2 /bin/sh -c  "service postfix start"
+ docker exec -it $COMS_CLIENT2 /bin/sh -c  "php -r 'mail(\"mailhog@bpmspace.net\", \"TEST from COMS_CLIENT2\", date(DATE_RFC822), \"From: liam2-client <coms-client2@bpmspace.net>\");'"
 
  # import DB
 echo "IMPORT DB on LIAM2"
@@ -253,8 +264,8 @@ ENVIROMENTDESC="<h1>Test Protokoll</h1>
 </ul>
 <h2>COMS Client2</h2>
 <ul>
-<li><a href=\"http://$HOSTNAME:33080 \">COMS Client2</a></li>
-<li><a href=\"http://$HOSTNAME:33080/release_cmd/fetch_all.php\">COMS Client2 FETCH ALL</a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_COMS_CLIENT2_HTTP \">COMS Client2</a></li>
+<li><a href=\"http://$HOSTNAME:$EXT_PORT_COMS_CLIENT2_HTTP/release_cmd/fetch_all.php\">COMS Client2 FETCH ALL</a></li>
 </ul>
 <h2>Docker Commands</h2>
 <ul>
