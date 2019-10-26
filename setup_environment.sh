@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 var_script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 var_temp_dir=/tmp/$(date +"%m_%d_%Y_%s")
 

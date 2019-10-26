@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 docker container stop $(docker container ls -a -q)
 docker container prune -f
 docker volume prune -f

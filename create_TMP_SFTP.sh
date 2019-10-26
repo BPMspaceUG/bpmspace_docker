@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 docker build -t tmpsftpserver_img -f ./_tmp_sftp/Dockerfile .
 docker run \
     -v bpmspace_docker:/home/developer/bpmspace_docker \
